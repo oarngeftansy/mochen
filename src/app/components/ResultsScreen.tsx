@@ -1,6 +1,7 @@
 import { motion, useReducedMotion } from 'motion/react';
 import { useLanguage } from '../contexts/LanguageContext';
-import { PALETTE, FONTS, getIngredient } from '../../config/assets';
+import { useConfig } from '../contexts/ConfigContext';
+import { PALETTE, FONTS } from '../../config/assets';
 import type { CompletedPlate } from './ProcessingMode';
 
 export function ResultsScreen({
@@ -11,6 +12,8 @@ export function ResultsScreen({
   onRestart: () => void;
 }) {
   const { t, language } = useLanguage();
+  const { ingredients } = useConfig();
+  const getIngredient = (id: string) => ingredients.find((i) => i.id === id);
   const reduceMotion = useReducedMotion();
 
   const totalSlices = plates.reduce((sum, p) => sum + p.slices.length, 0);

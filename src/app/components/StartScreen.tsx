@@ -1,6 +1,7 @@
 import { motion, useReducedMotion } from 'motion/react';
 import { useLanguage } from '../contexts/LanguageContext';
-import { INGREDIENTS, PALETTE, FONTS } from '../../config/assets';
+import { useConfig } from '../contexts/ConfigContext';
+import { PALETTE, FONTS } from '../../config/assets';
 
 /** 装饰用的食材飘浮位置(围着标题转一圈) */
 const FLOAT_POSITIONS = [
@@ -13,10 +14,11 @@ const FLOAT_POSITIONS = [
 
 export function StartScreen({ onStart }: { onStart: () => void }) {
   const { t, language } = useLanguage();
+  const { ingredients } = useConfig();
   const reduceMotion = useReducedMotion();
 
-  // 取前 N 个食材做装饰,从 INGREDIENTS 配置驱动
-  const decorations = INGREDIENTS.slice(0, FLOAT_POSITIONS.length).map((cfg, i) => ({
+  // 取前 N 个食材做装饰,从 config 驱动(编辑器修改会实时反映)
+  const decorations = ingredients.slice(0, FLOAT_POSITIONS.length).map((cfg, i) => ({
     ...FLOAT_POSITIONS[i],
     cfg,
   }));
@@ -110,7 +112,7 @@ export function StartScreen({ onStart }: { onStart: () => void }) {
               transition={{ duration: 2, repeat: Infinity }}
               aria-hidden="true"
             >
-              {INGREDIENTS[0]?.emoji ?? '🍉'}
+              {ingredients[0]?.emoji ?? '🍉'}
             </motion.span>
             <span
               style={{

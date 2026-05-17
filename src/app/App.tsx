@@ -1,46 +1,65 @@
 import { useState, useRef, useEffect } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { LanguageProvider } from './contexts/LanguageContext';
+import { ConfigProvider, useConfig } from './contexts/ConfigContext';
 import { LanguageToggle } from './components/LanguageToggle';
 import { StartScreen } from './components/StartScreen';
 import { ConveyorMode } from './components/ConveyorMode';
 import { ProcessingMode, type CompletedPlate } from './components/ProcessingMode';
 import { ResultsScreen } from './components/ResultsScreen';
-import { BGM, VOLUME } from '../config/audio';
+import { EditorButton } from './components/Editor/EditorButton';
 import type { CollectedIngredient } from './shared/types';
 
 type GameMode = 'start' | 'conveyor' | 'processing' | 'results';
 
 export default function App() {
+  return (
+    <ConfigProvider>
+      <LanguageProvider>
+        <GameRoot />
+      </LanguageProvider>
+    </ConfigProvider>
+  );
+}
+
+function GameRoot() {
   const [gameMode, setGameMode] = useState<GameMode>('start');
   const [collectedIngredients, setCollectedIngredients] = useState<CollectedIngredient[]>([]);
   const [completedPlates, setCompletedPlates] = useState<CompletedPlate[]>([]);
+  const { bgm: bgmUrls, volume } = useConfig();
   const conveyorBgmRef = useRef<HTMLAudioElement | null>(null);
   const processingBgmRef = useRef<HTMLAudioElement | null>(null);
 
+  // BGM 跟随 config 变化重新加载
   useEffect(() => {
-    // 只对非空 URL 加载音频。空字符串 = 该模式没有 BGM。
-    if (BGM.conveyor) {
-      const bgm = new Audio(BGM.conveyor);
-      bgm.loop = true;
-      bgm.volume = VOLUME.bgm;
-      bgm.preload = 'auto';
-      conveyorBgmRef.current = bgm;
+    conveyorBgmRef.current?.pause();
+    conveyorBgmRef.current = null;
+    if (bgmUrls.conveyor) {
+      const a = new Audio(bgmUrls.conveyor);
+      a.loop = true;
+      a.volume = volume.bgm;
+      a.preload = 'auto';
+      conveyorBgmRef.current = a;
     }
-
-    if (BGM.processing) {
-      const bgm = new Audio(BGM.processing);
-      bgm.loop = true;
-      bgm.volume = VOLUME.bgm;
-      bgm.preload = 'auto';
-      processingBgmRef.current = bgm;
-    }
-
     return () => {
       conveyorBgmRef.current?.pause();
+    };
+  }, [bgmUrls.conveyor, volume.bgm]);
+
+  useEffect(() => {
+    processingBgmRef.current?.pause();
+    processingBgmRef.current = null;
+    if (bgmUrls.processing) {
+      const a = new Audio(bgmUrls.processing);
+      a.loop = true;
+      a.volume = volume.bgm;
+      a.preload = 'auto';
+      processingBgmRef.current = a;
+    }
+    return () => {
       processingBgmRef.current?.pause();
     };
-  }, []);
+  }, [bgmUrls.processing, volume.bgm]);
 
   const playBgm = (ref: React.MutableRefObject<HTMLAudioElement | null>) => {
     const bgm = ref.current;
@@ -86,10 +105,10 @@ export default function App() {
   };
 
   return (
-    <LanguageProvider>
-      <div className="size-full overflow-hidden" style={{ background: 'var(--game-bg-gradient)' }}>
-        <LanguageToggle />
-        <AnimatePresence mode="wait">
+    <div className="size-full overflow-hidden" style={{ background: 'var(--game-bg-gradient)' }}>
+      <LanguageToggle />
+      <EditorButton />
+      <AnimatePresence mode="wait">
           {gameMode === 'start' && (
             <ScreenWrapper key="start">
               <StartScreen onStart={handleStart} />
@@ -119,9 +138,8 @@ export default function App() {
               />
             </ScreenWrapper>
           )}
-        </AnimatePresence>
-      </div>
-    </LanguageProvider>
+      </AnimatePresence>
+    </div>
   );
 }
 

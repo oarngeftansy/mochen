@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import { useLanguage } from '../contexts/LanguageContext';
-import { GAMEPLAY, PALETTE, FONTS, getIngredient } from '../../config/assets';
-import { SFX, VOLUME } from '../../config/audio';
+import { useConfig } from '../contexts/ConfigContext';
+import { GAMEPLAY, PALETTE, FONTS } from '../../config/assets';
 import type { CollectedIngredient } from '../shared/types';
 
 type CutType = 'horizontal' | 'vertical' | 'diagonal';
@@ -32,6 +32,8 @@ export function ProcessingMode({
   onComplete: (plates: CompletedPlate[]) => void;
 }) {
   const { t, language } = useLanguage();
+  const { ingredients: INGREDIENTS, sfx: SFX, volume: VOLUME } = useConfig();
+  const getIngredient = (id: string) => INGREDIENTS.find((i) => i.id === id);
   const reduceMotion = useReducedMotion();
   const [currentIdx, setCurrentIdx] = useState(0);
   const [slices, setSlices] = useState<Slice[]>([]);
@@ -50,8 +52,10 @@ export function ProcessingMode({
   const currentIngredient = ingredients[currentIdx];
   const currentCfg = currentIngredient ? getIngredient(currentIngredient.ingredientId) : undefined;
 
-  // SFX 池(空 URL 不加载)
+  // SFX 池(URL 变化时重新加载,空 URL 不加载)
   useEffect(() => {
+    Object.values(audioRefs.current).forEach((a) => a.pause());
+    audioRefs.current = {};
     Object.entries(SFX).forEach(([key, url]) => {
       if (url) {
         const a = new Audio(url);
@@ -61,7 +65,7 @@ export function ProcessingMode({
       }
     });
     return () => Object.values(audioRefs.current).forEach((a) => a.pause());
-  }, []);
+  }, [SFX, VOLUME.sfx]);
 
   // ESC 关闭模态
   useEffect(() => {

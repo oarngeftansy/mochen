@@ -1,15 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { useLanguage } from '../contexts/LanguageContext';
-import {
-  GAMEPLAY,
-  INGREDIENTS,
-  PALETTE,
-  FONTS,
-  getIngredient,
-  type IngredientType,
-} from '../../config/assets';
-import { SFX, VOLUME } from '../../config/audio';
+import { useConfig } from '../contexts/ConfigContext';
+import { GAMEPLAY, PALETTE, FONTS, type IngredientType } from '../../config/assets';
 import type { CollectedIngredient } from '../shared/types';
 
 /** 传送带上的食材实例 (内部状态) */
@@ -45,6 +38,8 @@ export function ConveyorMode({
   onRestart?: () => void;
 }) {
   const { t, language } = useLanguage();
+  const { ingredients: INGREDIENTS, sfx: SFX, volume: VOLUME } = useConfig();
+  const getIngredient = (id: string) => INGREDIENTS.find((i) => i.id === id);
   const reduceMotion = useReducedMotion();
   const [items, setItems] = useState<ConveyorItem[]>([]);
   const [collected, setCollected] = useState<ConveyorItem[]>([]);
@@ -60,8 +55,10 @@ export function ConveyorMode({
   const judgedRef = useRef<Set<string>>(new Set());
   const isPressDownRef = useRef(false);
 
-  // 初始化 SFX 池(只加载非空 URL)
+  // 初始化 SFX 池(URL 变化时重新加载,只加载非空 URL)
   useEffect(() => {
+    Object.values(audioRefs.current).forEach((a) => a.pause());
+    audioRefs.current = {};
     Object.entries(SFX).forEach(([key, url]) => {
       if (url) {
         const audio = new Audio(url);
@@ -73,7 +70,7 @@ export function ConveyorMode({
     return () => {
       Object.values(audioRefs.current).forEach((a) => a.pause());
     };
-  }, []);
+  }, [SFX, VOLUME.sfx]);
 
   // 生成谱面
   useEffect(() => {
