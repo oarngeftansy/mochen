@@ -15,8 +15,8 @@ const translations: Translations = {
   // 开始画面
   gameTitle: { zh: '烹饪模拟器', en: 'Cook Simulator' },
   gameSubtitle: {
-    zh: '像太鼓达人一样收集食材,然后切片摆盘!',
-    en: 'Collect ingredients rhythm-game style, then slice & plate!',
+    zh: '化身大厨,挥刀掌勺,做出你的招牌菜!',
+    en: 'Be the chef. Slice, plate, serve.',
   },
   startGame: { zh: '开始游戏', en: 'Start Game' },
   startHint: {
