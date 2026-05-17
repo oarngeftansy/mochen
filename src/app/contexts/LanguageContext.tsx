@@ -13,7 +13,7 @@ type Translations = {
 
 const translations: Translations = {
   // 开始画面
-  gameTitle: { zh: '食材大师', en: 'Ingredient Master' },
+  gameTitle: { zh: '烹饪模拟器', en: 'Cook Simulator' },
   gameSubtitle: {
     zh: '像太鼓达人一样收集食材,然后切片摆盘!',
     en: 'Collect ingredients rhythm-game style, then slice & plate!',
