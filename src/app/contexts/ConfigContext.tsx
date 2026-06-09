@@ -54,8 +54,8 @@ const ConfigContext = createContext<ConfigContextValue | null>(null);
 /* Defaults helper                                                      */
 /* ------------------------------------------------------------------ */
 
-// v5: 切到 Warm Coral 调色板,旧 overrides 自动失效
-const STORAGE_KEY = 'game-config-overrides:v5';
+// v6: 切到 Warm Coral 调色板,旧 overrides 自动失效
+const STORAGE_KEY = 'game-config-overrides:v6';
 
 function getDefaults(): ConfigState {
   return {
@@ -68,8 +68,29 @@ function getDefaults(): ConfigState {
   };
 }
 
+/** 启动时清掉所有旧版本的 overrides(防止 React Fast Refresh 钉死旧 state) */
+function purgeOldVersions() {
+  if (typeof window === 'undefined') return;
+  try {
+    const keysToRemove: string[] = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith('game-config-overrides:') && key !== STORAGE_KEY) {
+        keysToRemove.push(key);
+      }
+    }
+    keysToRemove.forEach((k) => localStorage.removeItem(k));
+    if (keysToRemove.length > 0) {
+      console.info(`[ConfigContext] Purged stale overrides: ${keysToRemove.join(', ')}`);
+    }
+  } catch {
+    // 忽略
+  }
+}
+
 function loadStored(): ConfigState {
   if (typeof window === 'undefined') return getDefaults();
+  purgeOldVersions();
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return getDefaults();
