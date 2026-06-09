@@ -472,6 +472,7 @@ export function ProcessingMode({
               onChange={updateEditingSlice}
               language={language}
               getIngredient={getIngredient}
+              boardRef={boardRef}
             />
           )}
 
@@ -527,7 +528,6 @@ export function ProcessingMode({
           {isEditingPlate ? (
             <PlatingToolbar
               selected={editingSlices.find((s) => s.id === selectedEditId) ?? null}
-              onChange={updateEditingSlice}
               onConfirm={confirmPlateEditor}
               onCancel={cancelPlateEditor}
               sliceCount={editingSlices.length}
@@ -1007,6 +1007,7 @@ function PlatingEditor({
   onChange,
   language,
   getIngredient,
+  boardRef,
 }: {
   slices: Slice[];
   selectedId: string | null;
@@ -1014,6 +1015,7 @@ function PlatingEditor({
   onChange: (id: string, patch: Partial<Slice>) => void;
   language: 'zh' | 'en';
   getIngredient: (id: string) => ReturnType<typeof useConfig>['ingredients'][number] | undefined;
+  boardRef: React.RefObject<HTMLDivElement>;
 }) {
   return (
     <>
@@ -1055,6 +1057,7 @@ function PlatingEditor({
             onChange={(patch) => onChange(slice.id, patch)}
             cfg={cfg}
             language={language}
+            boardRef={boardRef}
           />
         );
       })}
@@ -1069,6 +1072,7 @@ function DraggableSlice({
   onChange,
   cfg,
   language,
+  boardRef,
 }: {
   slice: Slice;
   selected: boolean;
@@ -1076,6 +1080,7 @@ function DraggableSlice({
   onChange: (patch: Partial<Slice>) => void;
   cfg: ReturnType<typeof useConfig>['ingredients'][number];
   language: 'zh' | 'en';
+  boardRef: React.RefObject<HTMLDivElement>;
 }) {
   const baseSize = 80;
   const scale = slice.scale ?? 1;
@@ -1145,17 +1150,153 @@ function DraggableSlice({
         draggable={false}
       />
       {selected && (
-        <div
-          style={{
-            position: 'absolute',
-            inset: -6,
-            border: `2px dashed ${PALETTE.primary}`,
-            borderRadius: '8px',
-            pointerEvents: 'none',
-          }}
-        />
+        <>
+          <div
+            style={{
+              position: 'absolute',
+              inset: -6,
+              border: `2px dashed ${PALETTE.primary}`,
+              borderRadius: '8px',
+              pointerEvents: 'none',
+            }}
+          />
+          {/* 旋转手柄: 切片上方小圆 */}
+          <RotateHandle slice={slice} onChange={onChange} boardRef={boardRef} />
+          {/* 缩放手柄: 切片右下角 */}
+          <ScaleHandle slice={slice} onChange={onChange} boardRef={boardRef} baseSize={baseSize} />
+        </>
       )}
     </motion.div>
+  );
+}
+
+/** 旋转手柄: 选中切片后,上方 24px 处的小圆。拖动让旋转角度跟随鼠标绕切片中心。 */
+function RotateHandle({
+  slice,
+  onChange,
+  boardRef,
+}: {
+  slice: Slice;
+  onChange: (patch: Partial<Slice>) => void;
+  boardRef: React.RefObject<HTMLDivElement>;
+}) {
+  const startRef = useRef<{ rotation: number; angleDeg: number } | null>(null);
+
+  const onPointerDown = (e: React.PointerEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    if (!boardRef.current) return;
+    const rect = boardRef.current.getBoundingClientRect();
+    const cx = rect.left + slice.x;
+    const cy = rect.top + slice.y;
+    const startAngle = (Math.atan2(e.clientY - cy, e.clientX - cx) * 180) / Math.PI;
+    startRef.current = { rotation: slice.rotation, angleDeg: startAngle };
+
+    const onMove = (ev: PointerEvent) => {
+      if (!startRef.current) return;
+      const curr = (Math.atan2(ev.clientY - cy, ev.clientX - cx) * 180) / Math.PI;
+      const delta = curr - startRef.current.angleDeg;
+      onChange({ rotation: startRef.current.rotation + delta });
+    };
+    const onUp = () => {
+      startRef.current = null;
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerup', onUp);
+      window.removeEventListener('pointercancel', onUp);
+    };
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup', onUp);
+    window.addEventListener('pointercancel', onUp);
+  };
+
+  return (
+    <div
+      onPointerDown={onPointerDown}
+      title="拖动旋转"
+      aria-label="Rotate"
+      style={{
+        position: 'absolute',
+        left: '50%',
+        top: -26,
+        transform: 'translateX(-50%)',
+        width: '16px',
+        height: '16px',
+        borderRadius: '50%',
+        background: PALETTE.tap,
+        border: `2px solid ${PALETTE.secondary}`,
+        cursor: 'crosshair',
+        zIndex: 30,
+        touchAction: 'none',
+      }}
+    />
+  );
+}
+
+/** 缩放手柄: 选中切片后,右下角小圆。拖动距切片中心越远 -> 越大,越近 -> 越小。 */
+function ScaleHandle({
+  slice,
+  onChange,
+  boardRef,
+  baseSize,
+}: {
+  slice: Slice;
+  onChange: (patch: Partial<Slice>) => void;
+  boardRef: React.RefObject<HTMLDivElement>;
+  baseSize: number;
+}) {
+  const startRef = useRef<{ scale: number; distance: number } | null>(null);
+
+  const onPointerDown = (e: React.PointerEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    if (!boardRef.current) return;
+    const rect = boardRef.current.getBoundingClientRect();
+    const cx = rect.left + slice.x;
+    const cy = rect.top + slice.y;
+    const dx = e.clientX - cx;
+    const dy = e.clientY - cy;
+    const startDist = Math.max(1, Math.sqrt(dx * dx + dy * dy));
+    startRef.current = { scale: slice.scale ?? 1, distance: startDist };
+
+    const onMove = (ev: PointerEvent) => {
+      if (!startRef.current) return;
+      const ddx = ev.clientX - cx;
+      const ddy = ev.clientY - cy;
+      const currDist = Math.sqrt(ddx * ddx + ddy * ddy);
+      const factor = currDist / startRef.current.distance;
+      const next = Math.max(0.3, Math.min(3.0, startRef.current.scale * factor));
+      onChange({ scale: next });
+    };
+    const onUp = () => {
+      startRef.current = null;
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerup', onUp);
+      window.removeEventListener('pointercancel', onUp);
+    };
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup', onUp);
+    window.addEventListener('pointercancel', onUp);
+  };
+
+  return (
+    <div
+      onPointerDown={onPointerDown}
+      title="拖动缩放"
+      aria-label="Scale"
+      style={{
+        position: 'absolute',
+        right: -8,
+        bottom: -8,
+        width: '16px',
+        height: '16px',
+        borderRadius: '50%',
+        background: PALETTE.warning,
+        border: `2px solid ${PALETTE.secondary}`,
+        cursor: 'nwse-resize',
+        zIndex: 30,
+        touchAction: 'none',
+      }}
+    />
   );
 }
 
@@ -1165,7 +1306,6 @@ function DraggableSlice({
 
 function PlatingToolbar({
   selected,
-  onChange,
   onConfirm,
   onCancel,
   sliceCount,
@@ -1173,16 +1313,12 @@ function PlatingToolbar({
   t,
 }: {
   selected: Slice | null;
-  onChange: (id: string, patch: Partial<Slice>) => void;
   onConfirm: () => void;
   onCancel: () => void;
   sliceCount: number;
   isLast: boolean;
   t: (key: string, values?: Record<string, string | number>) => string;
 }) {
-  const sel = selected;
-  const scale = sel?.scale ?? 1;
-
   return (
     <div className="flex flex-col items-center gap-3">
       <p
@@ -1194,63 +1330,20 @@ function PlatingToolbar({
         }}
       >
         {t('platingEditorHint')}
+        {selected && (
+          <span
+            style={{
+              marginLeft: '0.5rem',
+              fontFamily: FONTS.numeric,
+              fontWeight: 700,
+              color: PALETTE.textDark,
+              fontVariantNumeric: 'tabular-nums',
+            }}
+          >
+            · {Math.round(((selected.scale ?? 1) * 100))}% · {Math.round(selected.rotation)}°
+          </span>
+        )}
       </p>
-
-      {/* 编辑工具按钮:只有选中了某片才启用 */}
-      <div className="flex items-center gap-2 flex-wrap justify-center">
-        <ToolBtn
-          disabled={!sel}
-          onClick={() => sel && onChange(sel.id, { rotation: sel.rotation - 15 })}
-          title="↺ −15°"
-        >
-          ↺
-        </ToolBtn>
-        <ToolBtn
-          disabled={!sel}
-          onClick={() => sel && onChange(sel.id, { rotation: sel.rotation + 15 })}
-          title="↻ +15°"
-        >
-          ↻
-        </ToolBtn>
-        <ToolBtn
-          disabled={!sel}
-          onClick={() =>
-            sel && onChange(sel.id, { scale: Math.max(0.4, (sel.scale ?? 1) - 0.1) })
-          }
-          title="−"
-        >
-          −
-        </ToolBtn>
-        <span
-          style={{
-            fontFamily: FONTS.numeric,
-            fontWeight: 700,
-            color: sel ? PALETTE.textDark : PALETTE.textMuted,
-            minWidth: '52px',
-            textAlign: 'center',
-            fontSize: '0.875rem',
-            fontVariantNumeric: 'tabular-nums',
-          }}
-        >
-          {Math.round(scale * 100)}%
-        </span>
-        <ToolBtn
-          disabled={!sel}
-          onClick={() =>
-            sel && onChange(sel.id, { scale: Math.min(2.5, (sel.scale ?? 1) + 0.1) })
-          }
-          title="+"
-        >
-          +
-        </ToolBtn>
-        <ToolBtn
-          disabled={!sel}
-          onClick={() => sel && onChange(sel.id, { rotation: 0, scale: 1 })}
-          title={t('resetLabel')}
-        >
-          {t('resetLabel')}
-        </ToolBtn>
-      </div>
 
       <div className="flex gap-3 mt-2 flex-wrap justify-center">
         <SecondaryBtn onClick={onCancel}>{t('continueSlicing')}</SecondaryBtn>
@@ -1261,41 +1354,5 @@ function PlatingToolbar({
         </PrimaryBtn>
       </div>
     </div>
-  );
-}
-
-function ToolBtn({
-  children,
-  onClick,
-  disabled,
-  title,
-}: {
-  children: React.ReactNode;
-  onClick: () => void;
-  disabled?: boolean;
-  title?: string;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      disabled={disabled}
-      title={title}
-      style={{
-        padding: '0.5rem 0.875rem',
-        fontFamily: FONTS.display,
-        fontSize: '1rem',
-        fontWeight: 700,
-        color: disabled ? PALETTE.textMuted : '#FFFFFF',
-        background: disabled ? 'rgba(0,0,0,0.08)' : PALETTE.primary,
-        border: `2px solid ${PALETTE.secondary}`,
-        borderRadius: '8px',
-        cursor: disabled ? 'not-allowed' : 'pointer',
-        boxShadow: disabled ? 'none' : 'var(--shadow-pill)',
-        minWidth: '40px',
-      }}
-    >
-      {children}
-    </button>
   );
 }
