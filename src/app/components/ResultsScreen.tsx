@@ -95,15 +95,29 @@ export function ResultsScreen({
                   justifyContent: 'center',
                 }}
               >
-                {uniqueIngredients.map((cfg) => (
-                  <span
-                    key={cfg.id}
-                    role="img"
-                    aria-label={cfg.name[language]}
-                  >
-                    {cfg.emoji}
-                  </span>
-                ))}
+                {uniqueIngredients.map((cfg) =>
+                  cfg.imageSliced ? (
+                    <img
+                      key={cfg.id}
+                      src={cfg.imageSliced}
+                      alt={cfg.name[language]}
+                      style={{
+                        width: '40px',
+                        height: '40px',
+                        imageRendering: 'pixelated',
+                        objectFit: 'contain',
+                      }}
+                    />
+                  ) : (
+                    <span
+                      key={cfg.id}
+                      role="img"
+                      aria-label={cfg.name[language]}
+                    >
+                      {cfg.emoji}
+                    </span>
+                  ),
+                )}
               </div>
 
               <div

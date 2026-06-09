@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" shape-rendering="crispEdges" width="16" height="16">
+  <!-- outline (circular cross-section) -->
+  <rect x="6" y="1" width="4" height="1" fill="#2D1B36"/>
+  <rect x="4" y="2" width="2" height="1" fill="#2D1B36"/>
+  <rect x="10" y="2" width="2" height="1" fill="#2D1B36"/>
+  <rect x="3" y="3" width="1" height="1" fill="#2D1B36"/>
+  <rect x="12" y="3" width="1" height="1" fill="#2D1B36"/>
+  <rect x="2" y="4" width="1" height="2" fill="#2D1B36"/>
+  <rect x="13" y="4" width="1" height="2" fill="#2D1B36"/>
+  <rect x="1" y="6" width="1" height="4" fill="#2D1B36"/>
+  <rect x="14" y="6" width="1" height="4" fill="#2D1B36"/>
+  <rect x="2" y="10" width="1" height="2" fill="#2D1B36"/>
+  <rect x="13" y="10" width="1" height="2" fill="#2D1B36"/>
+  <rect x="3" y="12" width="1" height="1" fill="#2D1B36"/>
+  <rect x="12" y="12" width="1" height="1" fill="#2D1B36"/>
+  <rect x="4" y="13" width="2" height="1" fill="#2D1B36"/>
+  <rect x="10" y="13" width="2" height="1" fill="#2D1B36"/>
+  <rect x="6" y="14" width="4" height="1" fill="#2D1B36"/>
+  <!-- outer red skin -->
+  <rect x="6" y="2" width="4" height="1" fill="#C0392B"/>
+  <rect x="4" y="3" width="8" height="1" fill="#C0392B"/>
+  <rect x="3" y="4" width="1" height="8" fill="#C0392B"/>
+  <rect x="12" y="4" width="1" height="8" fill="#C0392B"/>
+  <rect x="4" y="12" width="8" height="1" fill="#C0392B"/>
+  <rect x="6" y="13" width="4" height="1" fill="#C0392B"/>
+  <!-- light red flesh -->
+  <rect x="4" y="4" width="8" height="8" fill="#FF6B5C"/>
+  <!-- chamber dividers (pixel cross) -->
+  <rect x="7" y="5" width="2" height="6" fill="#FFB5AB"/>
+  <rect x="5" y="7" width="6" height="2" fill="#FFB5AB"/>
+  <!-- seeds -->
+  <rect x="5" y="5" width="1" height="1" fill="#FFE6A0"/>
+  <rect x="10" y="5" width="1" height="1" fill="#FFE6A0"/>
+  <rect x="5" y="10" width="1" height="1" fill="#FFE6A0"/>
+  <rect x="10" y="10" width="1" height="1" fill="#FFE6A0"/>
+  <!-- highlight -->
+  <rect x="4" y="4" width="2" height="1" fill="#FF9080"/>
+  <rect x="4" y="5" width="1" height="2" fill="#FF9080"/>
+</svg>

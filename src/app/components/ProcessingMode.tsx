@@ -300,7 +300,8 @@ export function ProcessingMode({
                 <img
                   src={currentCfg.imageWhole}
                   alt={currentCfg.name[language]}
-                  className="w-96 h-96 object-contain drop-shadow-2xl"
+                  className="w-96 h-96 object-contain"
+                  style={{ imageRendering: 'pixelated' }}
                 />
               ) : (
                 <div
@@ -314,36 +315,40 @@ export function ProcessingMode({
             </motion.div>
           )}
 
-          {/* 切片中 */}
+          {/* 切片中: 一片片切片散落在板上 */}
           {!isPlating &&
-            slices.map((slice, index) => {
+            slices.map((slice) => {
               const cfg = getIngredient(slice.ingredientId);
               if (!cfg) return null;
+              const sliceSize = 96; // 切片像素 sprite 渲染尺寸 (px)
               return (
                 <motion.div
                   key={slice.id}
                   className="absolute pointer-events-none"
-                  style={{ left: `${slice.x}px`, top: `${slice.y}px` }}
-                  initial={{ scale: 0, rotate: 0 }}
-                  animate={{
-                    scale: 1,
-                    rotate: slice.rotation,
-                    x: Math.cos(index) * 40,
-                    y: Math.sin(index) * 40,
+                  style={{
+                    left: `${slice.x - sliceSize / 2}px`,
+                    top: `${slice.y - sliceSize / 2}px`,
                   }}
-                  transition={{ type: 'spring', duration: 0.4 }}
+                  initial={{ scale: 0, rotate: 0, opacity: 0 }}
+                  animate={{ scale: 1, rotate: slice.rotation, opacity: 1 }}
+                  transition={{ type: 'spring', stiffness: 260, damping: 14, mass: 0.5 }}
                 >
                   {cfg.imageSliced ? (
                     <img
                       src={cfg.imageSliced}
                       alt={cfg.name[language]}
-                      className="w-40 h-40 object-contain drop-shadow-lg"
+                      style={{
+                        width: `${sliceSize}px`,
+                        height: `${sliceSize}px`,
+                        imageRendering: 'pixelated',
+                        objectFit: 'contain',
+                      }}
                     />
                   ) : (
                     <div
                       role="img"
                       aria-label={cfg.name[language]}
-                      style={{ fontSize: '120px', lineHeight: 1 }}
+                      style={{ fontSize: `${sliceSize * 0.85}px`, lineHeight: 1 }}
                     >
                       {cfg.emoji}
                     </div>
@@ -512,11 +517,24 @@ export function ProcessingMode({
                 <div className="flex flex-wrap justify-center gap-1 mb-1">
                   {Array.from(new Set(plate.slices.map((s) => s.ingredientId))).map((id) => {
                     const cfg = getIngredient(id);
-                    return cfg ? (
+                    if (!cfg) return null;
+                    return cfg.imageSliced ? (
+                      <img
+                        key={id}
+                        src={cfg.imageSliced}
+                        alt={cfg.name[language]}
+                        style={{
+                          width: '24px',
+                          height: '24px',
+                          imageRendering: 'pixelated',
+                          objectFit: 'contain',
+                        }}
+                      />
+                    ) : (
                       <span key={id} role="img" aria-label={cfg.name[language]} style={{ fontSize: '1.25rem' }}>
                         {cfg.emoji}
                       </span>
-                    ) : null;
+                    );
                   })}
                 </div>
                 <div
@@ -598,9 +616,23 @@ export function ProcessingMode({
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
-                    <div role="img" aria-label={cfg.name[language]} style={{ fontSize: '2.5rem' }}>
-                      {cfg.emoji}
-                    </div>
+                    {cfg.imageSliced ? (
+                      <img
+                        src={cfg.imageSliced}
+                        alt={cfg.name[language]}
+                        style={{
+                          width: '56px',
+                          height: '56px',
+                          imageRendering: 'pixelated',
+                          objectFit: 'contain',
+                          margin: '0 auto',
+                        }}
+                      />
+                    ) : (
+                      <div role="img" aria-label={cfg.name[language]} style={{ fontSize: '2.5rem' }}>
+                        {cfg.emoji}
+                      </div>
+                    )}
                     <div
                       style={{
                         fontFamily: FONTS.body,
@@ -818,7 +850,7 @@ function PlatingAnimation({
                 src={cfg.imageSliced}
                 alt={cfg.name[language]}
                 className="w-40 h-40 object-contain"
-                style={{ filter: 'none' }}
+                style={{ filter: 'none', imageRendering: 'pixelated' }}
               />
             ) : (
               <div

@@ -12,10 +12,15 @@
  */
 
 import watermelonPx from '../assets/pixel/watermelon.svg';
+import watermelonSlicePx from '../assets/pixel/watermelon-slice.svg';
 import tomatoPx from '../assets/pixel/tomato.svg';
+import tomatoSlicePx from '../assets/pixel/tomato-slice.svg';
 import cucumberPx from '../assets/pixel/cucumber.svg';
+import cucumberSlicePx from '../assets/pixel/cucumber-slice.svg';
 import carrotPx from '../assets/pixel/carrot.svg';
+import carrotSlicePx from '../assets/pixel/carrot-slice.svg';
 import eggplantPx from '../assets/pixel/eggplant.svg';
+import eggplantSlicePx from '../assets/pixel/eggplant-slice.svg';
 
 export type IngredientType = 'tap' | 'hold';
 
@@ -46,7 +51,7 @@ export const INGREDIENTS: IngredientConfig[] = [
     emoji: '🍉',
     type: 'tap',
     imageWhole: watermelonPx,
-    imageSliced: watermelonPx,
+    imageSliced: watermelonSlicePx,
   },
   {
     id: 'tomato',
@@ -54,7 +59,7 @@ export const INGREDIENTS: IngredientConfig[] = [
     emoji: '🍅',
     type: 'tap',
     imageWhole: tomatoPx,
-    imageSliced: tomatoPx,
+    imageSliced: tomatoSlicePx,
   },
   {
     id: 'cucumber',
@@ -62,7 +67,7 @@ export const INGREDIENTS: IngredientConfig[] = [
     emoji: '🥒',
     type: 'hold',
     imageWhole: cucumberPx,
-    imageSliced: cucumberPx,
+    imageSliced: cucumberSlicePx,
   },
   {
     id: 'carrot',
@@ -70,7 +75,7 @@ export const INGREDIENTS: IngredientConfig[] = [
     emoji: '🥕',
     type: 'tap',
     imageWhole: carrotPx,
-    imageSliced: carrotPx,
+    imageSliced: carrotSlicePx,
   },
   {
     id: 'eggplant',
@@ -78,7 +83,7 @@ export const INGREDIENTS: IngredientConfig[] = [
     emoji: '🍆',
     type: 'hold',
     imageWhole: eggplantPx,
-    imageSliced: eggplantPx,
+    imageSliced: eggplantSlicePx,
   },
 ];
 
