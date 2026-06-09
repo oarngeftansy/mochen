@@ -54,8 +54,9 @@ const ConfigContext = createContext<ConfigContextValue | null>(null);
 /* Defaults helper                                                      */
 /* ------------------------------------------------------------------ */
 
-// v6: 切到 Warm Coral 调色板,旧 overrides 自动失效
-const STORAGE_KEY = 'game-config-overrides:v6';
+// v7: 当前 schema 版本。index.html 启动脚本会清掉所有非 v7 的旧 overrides。
+const SCHEMA_VERSION = 7;
+const STORAGE_KEY = 'game-config-overrides:v7';
 
 function getDefaults(): ConfigState {
   return {
@@ -159,10 +160,10 @@ function applyToCssVars(palette: Palette, fonts: Fonts) {
 export function ConfigProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<ConfigState>(() => loadStored());
 
-  // 持久化
+  // 持久化(带 schema 版本标记)
   useEffect(() => {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ _v: SCHEMA_VERSION, ...state }));
     } catch {
       // 配额满了之类的,忽略
     }

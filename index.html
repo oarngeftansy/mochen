@@ -4,8 +4,30 @@
     <head>
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <!-- bust:v7 -->
       <title>Cook Simulator</title>
       <style>html, body { height: 100%; margin: 0; } #root { height: 100%; }</style>
+      <script>
+        // 强制清掉所有版本的旧 overrides,只保留当前 schema (v7+) 的数据。
+        // React 启动前跑,避免 Fast Refresh 把旧 state 钉死。
+        (function () {
+          try {
+            var SCHEMA = 7;
+            var keys = [];
+            for (var i = 0; i < localStorage.length; i++) {
+              var k = localStorage.key(i);
+              if (k && k.indexOf('game-config-overrides:') === 0) keys.push(k);
+            }
+            keys.forEach(function (k) {
+              var raw = localStorage.getItem(k);
+              if (!raw || raw.indexOf('"_v":' + SCHEMA) === -1) {
+                localStorage.removeItem(k);
+                console.info('[boot] Purged stale config:', k);
+              }
+            });
+          } catch (e) {}
+        })();
+      </script>
     </head>
 
     <body>
