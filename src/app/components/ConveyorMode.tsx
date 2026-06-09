@@ -660,26 +660,29 @@ function HitZone({
         />
       </div>
 
-      {/* HOLD 蓄力进度环 (IxD gesture-feedback) */}
+      {/* HOLD 蓄力进度环 (IxD gesture-feedback) — 跟主判定圈同心 */}
       {isHolding && (
         <svg
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
           width="160"
           height="160"
-          style={{ transform: 'translate(-50%, -50%) rotate(-90deg)' }}
+          viewBox="0 0 160 160"
         >
-          <circle
-            cx="80"
-            cy="80"
-            r="74"
-            fill="none"
-            stroke={PALETTE.hold2}
-            strokeWidth="6"
-            strokeLinecap="round"
-            strokeDasharray={2 * Math.PI * 74}
-            strokeDashoffset={(1 - holdProgress) * 2 * Math.PI * 74}
-            style={{ filter: 'drop-shadow(0 0 8px rgba(129,255,164,0.8))' }}
-          />
+          {/* 旋转在 <g> 内部走,不动外层 CSS transform,避免跟 Tailwind 的 translate 叠加 */}
+          <g transform="rotate(-90 80 80)">
+            <circle
+              cx="80"
+              cy="80"
+              r="70"
+              fill="none"
+              stroke={PALETTE.hold2}
+              strokeWidth="6"
+              strokeLinecap="round"
+              strokeDasharray={2 * Math.PI * 70}
+              strokeDashoffset={(1 - holdProgress) * 2 * Math.PI * 70}
+              style={{ filter: 'drop-shadow(0 0 8px rgba(127,227,136,0.8))' }}
+            />
+          </g>
         </svg>
       )}
 
