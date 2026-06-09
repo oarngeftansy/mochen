@@ -104,31 +104,30 @@ export type { SfxKey, BgmKey } from './audio';
 /* ------------------------------------------------------------------ */
 
 /**
- * 游戏调色板 — Candy Pop 像素风 (鲜艳 / 活泼 / 任天堂风):
- * - 高饱和天空蓝背景(像 Mario / Kirby 天空)
- * - 深紫黑厚描边 + 像素步阶硬阴影
- * - 番茄红主 CTA / 蛋黄 / 草绿 / 樱粉 多色点缀
- * - 奶油黄卡片
+ * 游戏调色板 — Warm Coral 像素风(匹配参考图珊瑚渐变):
+ * - 暖珊瑚色背景渐变(浅桃 → 深珊瑚)
+ * - 番茄红主 CTA + 紫黑厚描边
+ * - 白色卡片 + 金黄/樱粉对比点缀
  */
 export const PALETTE = {
-  primary: '#FF5252',        // 鲜番茄红(高饱和)
+  primary: '#FF4E3F',        // 深珊瑚红(CTA)
   primaryDark: '#D63838',
-  primaryShadow: '#2D1B36',  // 深紫黑(像素步阶硬阴影色)
-  secondary: '#2D1B36',      // 深紫黑(厚描边)
-  bgLight: '#5BC0F0',        // 鲜天空蓝(Mario sky)
-  bgDark: '#4FA8DB',         // 蓝深一阶
+  primaryShadow: '#2D1B36',
+  secondary: '#2D1B36',      // 深紫黑(描边)
+  bgLight: '#FFAB91',        // 浅桃色
+  bgDark: '#FF7259',         // 深珊瑚(渐变底)
   textDark: '#2D1B36',
-  textMuted: '#6B5570',
-  surface: '#FFF6D5',        // 奶油黄
+  textMuted: '#7A4A40',
+  surface: '#FFFFFF',        // 纯白卡片
   /** 玩法状态色 */
   tap: '#FFC93C',            // 金黄(TAP)
   hold: '#FF6B9D',           // 樱粉(HOLD)
-  hold2: '#7FE388',          // 鲜草绿(蓄力环)
+  hold2: '#7FE388',          // 草绿(蓄力)
   /** 判定色 */
-  perfect: '#57E16A',        // 鲜绿
-  good: '#FFC93C',           // 金黄
-  miss: '#FF5252',           // 红
-  combo: '#FF6B9D',          // 粉
+  perfect: '#57E16A',
+  good: '#FFC93C',
+  miss: '#FF4E3F',
+  combo: '#FF6B9D',
   success: '#57E16A',
   warning: '#FF9F40',
 } as const;

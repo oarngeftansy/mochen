@@ -29,12 +29,12 @@ export function StartScreen({ onStart }: { onStart: () => void }) {
       style={{ background: 'var(--game-bg-gradient)' }}
     >
       {/* 纸张纹理 */}
-      {/* 像素云朵点纹理 — 白色小斑点模拟天空 */}
+      {/* 暖光高亮斑点(白色 + 浅金,模拟珊瑚色背景上的高光) */}
       <div
         className="absolute inset-0"
         style={{
           backgroundImage:
-            'radial-gradient(circle at 12px 12px, rgba(255,255,255,0.6) 2px, transparent 2.5px), radial-gradient(circle at 36px 28px, rgba(255,255,255,0.4) 1.5px, transparent 2px)',
+            'radial-gradient(circle at 12px 12px, rgba(255,255,255,0.35) 2px, transparent 2.5px), radial-gradient(circle at 36px 28px, rgba(255,220,180,0.25) 1.5px, transparent 2px)',
           backgroundSize: '64px 48px, 48px 64px',
           backgroundPosition: '0 0, 24px 12px',
         }}

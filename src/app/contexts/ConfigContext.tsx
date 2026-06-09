@@ -54,8 +54,8 @@ const ConfigContext = createContext<ConfigContextValue | null>(null);
 /* Defaults helper                                                      */
 /* ------------------------------------------------------------------ */
 
-// v4: 切到 Candy Pop Pixel 调色板,旧 overrides 自动失效
-const STORAGE_KEY = 'game-config-overrides:v4';
+// v5: 切到 Warm Coral 调色板,旧 overrides 自动失效
+const STORAGE_KEY = 'game-config-overrides:v5';
 
 function getDefaults(): ConfigState {
   return {

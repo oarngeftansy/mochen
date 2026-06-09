@@ -9,22 +9,22 @@
 :root {
   --font-size: 16px;
 
-  /* === 游戏调色板 — Candy Pop Pixel (鲜艳天空 + 紫黑描边 + 像素硬阴影) === */
-  --game-primary: #FF5252;
+  /* === 游戏调色板 — Warm Coral Pixel (珊瑚渐变 + 紫黑描边) === */
+  --game-primary: #FF4E3F;
   --game-primary-dark: #D63838;
   --game-primary-shadow: #2D1B36;
   --game-secondary: #2D1B36;
-  --game-bg-light: #5BC0F0;
-  --game-bg-dark: #4FA8DB;
+  --game-bg-light: #FFAB91;
+  --game-bg-dark: #FF7259;
   --game-text-dark: #2D1B36;
-  --game-text-muted: #6B5570;
-  --game-surface: #FFF6D5;
+  --game-text-muted: #7A4A40;
+  --game-surface: #FFFFFF;
   --game-tap: #FFC93C;
   --game-hold: #FF6B9D;
   --game-hold-2: #7FE388;
   --game-perfect: #57E16A;
   --game-good: #FFC93C;
-  --game-miss: #FF5252;
+  --game-miss: #FF4E3F;
   --game-combo: #FF6B9D;
   --game-success: #57E16A;
   --game-warning: #FF9F40;
