@@ -109,10 +109,14 @@ export function ProcessingMode({
     if (isDrawing && cutPath.length > 5 && !isPlating && currentCfg) {
       const cutType = analyzeCutType(cutPath);
       playSound('cut');
+      // 切片在整颗外围沿圆周均匀排布(花瓣布局),不放在用户划线的位置
+      const sameCount = slices.filter((s) => s.ingredientId === currentCfg.id).length;
+      const angle = -Math.PI / 2 + (sameCount * 2 * Math.PI) / GAMEPLAY.maxSlicesPerIngredient;
+      const ringRadius = 180;
       const newSlice: Slice = {
         id: `slice-${Date.now()}`,
-        x: cutPath[Math.floor(cutPath.length / 2)].x,
-        y: cutPath[Math.floor(cutPath.length / 2)].y,
+        x: 300 + ringRadius * Math.cos(angle),
+        y: 200 + ringRadius * Math.sin(angle),
         rotation: getCutRotation(cutPath),
         cutType,
         ingredientId: currentCfg.id,
@@ -288,26 +292,36 @@ export function ProcessingMode({
             </svg>
           </div>
 
-          {/* 完整食材 */}
-          {slices.length === 0 && !isPlating && currentCfg && (
+          {/* 完整食材 — 一直显示,直到 5 刀切完 */}
+          {!isPlating && currentCfg && currentSliceCount < GAMEPLAY.maxSlicesPerIngredient && (
             <motion.div
+              key={`whole-${currentCfg.id}`}
               className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
               initial={{ scale: 0, rotate: -180 }}
-              animate={{ scale: 1, rotate: 0 }}
-              transition={{ type: 'spring', duration: 0.6 }}
+              animate={{
+                // 每切一刀 略微缩小 + 抖一下,给"在被切"的反馈
+                scale: 1 - currentSliceCount * 0.08,
+                rotate: 0,
+                x: isDrawing ? [0, -3, 3, 0] : 0,
+              }}
+              transition={{
+                scale: { type: 'spring', stiffness: 200, damping: 14 },
+                rotate: { type: 'spring', duration: 0.6 },
+                x: { duration: 0.15 },
+              }}
             >
               {currentCfg.imageWhole ? (
                 <img
                   src={currentCfg.imageWhole}
                   alt={currentCfg.name[language]}
-                  className="w-96 h-96 object-contain"
+                  className="w-64 h-64 object-contain"
                   style={{ imageRendering: 'pixelated' }}
                 />
               ) : (
                 <div
                   role="img"
                   aria-label={currentCfg.name[language]}
-                  style={{ fontSize: '240px', lineHeight: 1 }}
+                  style={{ fontSize: '180px', lineHeight: 1 }}
                 >
                   {currentCfg.emoji}
                 </div>
@@ -315,12 +329,14 @@ export function ProcessingMode({
             </motion.div>
           )}
 
-          {/* 切片中: 一片片切片散落在板上 */}
+          {/* 切片中: 每片从整颗中心飞向自己的花瓣位置 */}
           {!isPlating &&
             slices.map((slice) => {
               const cfg = getIngredient(slice.ingredientId);
               if (!cfg) return null;
-              const sliceSize = 96; // 切片像素 sprite 渲染尺寸 (px)
+              const sliceSize = 80;
+              const boardCenterX = 300;
+              const boardCenterY = 200;
               return (
                 <motion.div
                   key={slice.id}
@@ -329,9 +345,22 @@ export function ProcessingMode({
                     left: `${slice.x - sliceSize / 2}px`,
                     top: `${slice.y - sliceSize / 2}px`,
                   }}
-                  initial={{ scale: 0, rotate: 0, opacity: 0 }}
-                  animate={{ scale: 1, rotate: slice.rotation, opacity: 1 }}
-                  transition={{ type: 'spring', stiffness: 260, damping: 14, mass: 0.5 }}
+                  initial={{
+                    // 从整颗中心冒出
+                    x: boardCenterX - slice.x,
+                    y: boardCenterY - slice.y,
+                    scale: 0,
+                    rotate: 0,
+                    opacity: 0,
+                  }}
+                  animate={{
+                    x: 0,
+                    y: 0,
+                    scale: 1,
+                    rotate: slice.rotation,
+                    opacity: 1,
+                  }}
+                  transition={{ type: 'spring', stiffness: 220, damping: 16, mass: 0.6 }}
                 >
                   {cfg.imageSliced ? (
                     <img
