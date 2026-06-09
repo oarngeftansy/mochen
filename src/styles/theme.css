@@ -9,27 +9,27 @@
 :root {
   --font-size: 16px;
 
-  /* === 游戏调色板 — Stardew/Nintendo Pixel (sat'd + thick outline + hard step shadow) === */
-  --game-primary: #E84A3F;
-  --game-primary-dark: #B5342B;
-  --game-primary-shadow: #3D2817;
-  --game-secondary: #3D2817;
-  --game-bg-light: #88BC5A;
-  --game-bg-dark: #6FA248;
-  --game-text-dark: #3D2817;
-  --game-text-muted: #6B4A2E;
-  --game-surface: #FBE8A6;
-  --game-tap: #4FA3D8;
-  --game-hold: #E89B5A;
-  --game-hold-2: #7CC76E;
-  --game-perfect: #5BBF4A;
-  --game-good: #F2C84B;
-  --game-miss: #E84A3F;
-  --game-combo: #F26BAE;
-  --game-success: #5BBF4A;
-  --game-warning: #F2A03A;
+  /* === 游戏调色板 — Candy Pop Pixel (鲜艳天空 + 紫黑描边 + 像素硬阴影) === */
+  --game-primary: #FF5252;
+  --game-primary-dark: #D63838;
+  --game-primary-shadow: #2D1B36;
+  --game-secondary: #2D1B36;
+  --game-bg-light: #5BC0F0;
+  --game-bg-dark: #4FA8DB;
+  --game-text-dark: #2D1B36;
+  --game-text-muted: #6B5570;
+  --game-surface: #FFF6D5;
+  --game-tap: #FFC93C;
+  --game-hold: #FF6B9D;
+  --game-hold-2: #7FE388;
+  --game-perfect: #57E16A;
+  --game-good: #FFC93C;
+  --game-miss: #FF5252;
+  --game-combo: #FF6B9D;
+  --game-success: #57E16A;
+  --game-warning: #FF9F40;
 
-  --game-bg-gradient: var(--game-bg-light);
+  --game-bg-gradient: linear-gradient(180deg, var(--game-bg-light) 0%, var(--game-bg-dark) 100%);
   --game-primary-gradient: var(--game-primary);
 
   /* === 像素步阶硬阴影 token (Stardew/Nintendo 风,无 blur) === */

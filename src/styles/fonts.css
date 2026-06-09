@@ -1,16 +1,13 @@
-/* Stardew/Pixel Gaming Fonts */
+/* Candy Pop Pixel Gaming Fonts */
 
-/* 像素显示字体 - 标题 (西文) */
-@import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@500;700&display=swap');
-
-/* 像素 body - 西文 */
+/* 经典 NES/街机像素标题字体 (西文) */
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
-/* 圆润 body - 多语言通用 */
-@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap');
+/* 中文活泼圆体 (ZCOOL KuaiLe - 像素感粗黑) */
+@import url('https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap');
 
-/* 中文字体 - 像素感 (M PLUS Rounded 1c 圆体作为中文 fallback) */
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@700;800;900&display=swap');
+/* 圆润 body - 西文 + 中文兜底 */
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=Noto+Sans+SC:wght@700;800;900&display=swap');
 
 /* 数字字体 - 圆润 */
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap');

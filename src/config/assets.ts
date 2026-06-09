@@ -11,6 +11,12 @@
  * 音效字段为空时,该音效不播放(不会报错)。
  */
 
+import watermelonPx from '../assets/pixel/watermelon.svg';
+import tomatoPx from '../assets/pixel/tomato.svg';
+import cucumberPx from '../assets/pixel/cucumber.svg';
+import carrotPx from '../assets/pixel/carrot.svg';
+import eggplantPx from '../assets/pixel/eggplant.svg';
+
 export type IngredientType = 'tap' | 'hold';
 
 export type IngredientConfig = {
@@ -39,30 +45,40 @@ export const INGREDIENTS: IngredientConfig[] = [
     name: { zh: '西瓜', en: 'Watermelon' },
     emoji: '🍉',
     type: 'tap',
+    imageWhole: watermelonPx,
+    imageSliced: watermelonPx,
   },
   {
     id: 'tomato',
     name: { zh: '番茄', en: 'Tomato' },
     emoji: '🍅',
     type: 'tap',
+    imageWhole: tomatoPx,
+    imageSliced: tomatoPx,
   },
   {
     id: 'cucumber',
     name: { zh: '黄瓜', en: 'Cucumber' },
     emoji: '🥒',
     type: 'hold',
+    imageWhole: cucumberPx,
+    imageSliced: cucumberPx,
   },
   {
     id: 'carrot',
     name: { zh: '胡萝卜', en: 'Carrot' },
     emoji: '🥕',
     type: 'tap',
+    imageWhole: carrotPx,
+    imageSliced: carrotPx,
   },
   {
     id: 'eggplant',
     name: { zh: '茄子', en: 'Eggplant' },
     emoji: '🍆',
     type: 'hold',
+    imageWhole: eggplantPx,
+    imageSliced: eggplantPx,
   },
 ];
 
@@ -88,33 +104,33 @@ export type { SfxKey, BgmKey } from './audio';
 /* ------------------------------------------------------------------ */
 
 /**
- * 游戏调色板 — Stardew Valley / Nintendo 像素风:
- * - 鲜亮草绿背景(像 Stardew 草地)
- * - 厚重深棕描边 + 像素步阶硬阴影
- * - 高饱和原色 CTA(番茄红 / 蛋黄)
- * - 米色羊皮纸卡片
+ * 游戏调色板 — Candy Pop 像素风 (鲜艳 / 活泼 / 任天堂风):
+ * - 高饱和天空蓝背景(像 Mario / Kirby 天空)
+ * - 深紫黑厚描边 + 像素步阶硬阴影
+ * - 番茄红主 CTA / 蛋黄 / 草绿 / 樱粉 多色点缀
+ * - 奶油黄卡片
  */
 export const PALETTE = {
-  primary: '#E84A3F',        // 番茄红(高饱和、显眼)
-  primaryDark: '#B5342B',
-  primaryShadow: '#3D2817',  // 深森林棕(做像素步阶硬阴影)
-  secondary: '#3D2817',      // 深森林棕(厚描边)
-  bgLight: '#88BC5A',        // 鲜草绿
-  bgDark: '#6FA248',         // 深一阶
-  textDark: '#3D2817',
-  textMuted: '#6B4A2E',
-  surface: '#FBE8A6',        // Stardew 信纸黄
+  primary: '#FF5252',        // 鲜番茄红(高饱和)
+  primaryDark: '#D63838',
+  primaryShadow: '#2D1B36',  // 深紫黑(像素步阶硬阴影色)
+  secondary: '#2D1B36',      // 深紫黑(厚描边)
+  bgLight: '#5BC0F0',        // 鲜天空蓝(Mario sky)
+  bgDark: '#4FA8DB',         // 蓝深一阶
+  textDark: '#2D1B36',
+  textMuted: '#6B5570',
+  surface: '#FFF6D5',        // 奶油黄
   /** 玩法状态色 */
-  tap: '#4FA3D8',            // 鲜天空蓝
-  hold: '#E89B5A',           // 橙
-  hold2: '#7CC76E',          // 草绿(蓄力进度环)
-  /** 判定色 — 像素游戏的鲜艳判定 */
-  perfect: '#5BBF4A',
-  good: '#F2C84B',
-  miss: '#E84A3F',
-  combo: '#F26BAE',
-  success: '#5BBF4A',
-  warning: '#F2A03A',
+  tap: '#FFC93C',            // 金黄(TAP)
+  hold: '#FF6B9D',           // 樱粉(HOLD)
+  hold2: '#7FE388',          // 鲜草绿(蓄力环)
+  /** 判定色 */
+  perfect: '#57E16A',        // 鲜绿
+  good: '#FFC93C',           // 金黄
+  miss: '#FF5252',           // 红
+  combo: '#FF6B9D',          // 粉
+  success: '#57E16A',
+  warning: '#FF9F40',
 } as const;
 
 /* ------------------------------------------------------------------ */
@@ -122,8 +138,8 @@ export const PALETTE = {
 /* ------------------------------------------------------------------ */
 
 export const FONTS = {
-  /** 标题字体 — 像素 sans (西文) + 圆润 sans-serif (中文 fallback) */
-  display: "'Pixelify Sans', 'Noto Sans SC', sans-serif",
+  /** 标题字体 — 经典像素 (Press Start 2P 西文) + ZCOOL KuaiLe (中文像素感圆体) */
+  display: "'Press Start 2P', 'ZCOOL KuaiLe', 'Noto Sans SC', sans-serif",
   body: "'Quicksand', 'Noto Sans SC', sans-serif",
   numeric: "'Nunito', 'Noto Sans SC', sans-serif",
 } as const;

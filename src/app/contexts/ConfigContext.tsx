@@ -54,8 +54,8 @@ const ConfigContext = createContext<ConfigContextValue | null>(null);
 /* Defaults helper                                                      */
 /* ------------------------------------------------------------------ */
 
-// v3: 切到 Stardew/Pixel 调色板,旧 overrides 自动失效
-const STORAGE_KEY = 'game-config-overrides:v3';
+// v4: 切到 Candy Pop Pixel 调色板,旧 overrides 自动失效
+const STORAGE_KEY = 'game-config-overrides:v4';
 
 function getDefaults(): ConfigState {
   return {

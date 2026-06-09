@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" shape-rendering="crispEdges" width="16" height="16">
+  <!-- dark outline -->
+  <rect x="4" y="1" width="8" height="1" fill="#2D1B36"/>
+  <rect x="3" y="2" width="1" height="1" fill="#2D1B36"/>
+  <rect x="12" y="2" width="1" height="1" fill="#2D1B36"/>
+  <rect x="2" y="3" width="1" height="1" fill="#2D1B36"/>
+  <rect x="13" y="3" width="1" height="1" fill="#2D1B36"/>
+  <rect x="1" y="4" width="1" height="8" fill="#2D1B36"/>
+  <rect x="14" y="4" width="1" height="8" fill="#2D1B36"/>
+  <rect x="2" y="12" width="12" height="1" fill="#2D1B36"/>
+  <rect x="3" y="13" width="10" height="1" fill="#2D1B36"/>
+  <!-- dark green rind -->
+  <rect x="2" y="11" width="12" height="1" fill="#3D7A2C"/>
+  <rect x="3" y="12" width="10" height="1" fill="#3D7A2C"/>
+  <!-- light green inner rind -->
+  <rect x="2" y="10" width="12" height="1" fill="#95C76B"/>
+  <!-- pink-red flesh -->
+  <rect x="4" y="2" width="8" height="1" fill="#FF8FA3"/>
+  <rect x="3" y="3" width="10" height="1" fill="#FF6B8A"/>
+  <rect x="2" y="4" width="12" height="6" fill="#E84A3F"/>
+  <!-- highlight -->
+  <rect x="3" y="4" width="2" height="1" fill="#FF8FA3"/>
+  <!-- seeds -->
+  <rect x="5" y="6" width="1" height="2" fill="#2D1B36"/>
+  <rect x="9" y="5" width="1" height="2" fill="#2D1B36"/>
+  <rect x="11" y="7" width="1" height="2" fill="#2D1B36"/>
+  <rect x="7" y="8" width="1" height="2" fill="#2D1B36"/>
+</svg>

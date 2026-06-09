@@ -29,14 +29,14 @@ export function StartScreen({ onStart }: { onStart: () => void }) {
       style={{ background: 'var(--game-bg-gradient)' }}
     >
       {/* 纸张纹理 */}
-      {/* 像素草地纹理 — 用 radial-gradient 模拟草点 */}
+      {/* 像素云朵点纹理 — 白色小斑点模拟天空 */}
       <div
         className="absolute inset-0"
         style={{
           backgroundImage:
-            'radial-gradient(circle at 8px 8px, rgba(61,40,23,0.18) 1.5px, transparent 2px), radial-gradient(circle at 24px 24px, rgba(255,255,255,0.12) 1.5px, transparent 2px)',
-          backgroundSize: '32px 32px, 32px 32px',
-          backgroundPosition: '0 0, 16px 16px',
+            'radial-gradient(circle at 12px 12px, rgba(255,255,255,0.6) 2px, transparent 2.5px), radial-gradient(circle at 36px 28px, rgba(255,255,255,0.4) 1.5px, transparent 2px)',
+          backgroundSize: '64px 48px, 48px 64px',
+          backgroundPosition: '0 0, 24px 12px',
         }}
         aria-hidden="true"
       />
@@ -50,7 +50,10 @@ export function StartScreen({ onStart }: { onStart: () => void }) {
           style={{
             left: x,
             top: y,
+            width: `${size}px`,
+            height: `${size}px`,
             fontSize: `${size}px`,
+            imageRendering: 'pixelated',
             filter: 'none',
           }}
           initial={{ opacity: 0, scale: 0, rotate: -180 }}
@@ -69,7 +72,19 @@ export function StartScreen({ onStart }: { onStart: () => void }) {
               : { delay: delay + 0.6, duration: 3, repeat: Infinity, ease: 'easeInOut' },
           }}
         >
-          {cfg.emoji}
+          {cfg.imageWhole ? (
+            <img
+              src={cfg.imageWhole}
+              alt=""
+              style={{
+                width: '100%',
+                height: '100%',
+                imageRendering: 'pixelated',
+              }}
+            />
+          ) : (
+            cfg.emoji
+          )}
         </motion.div>
       ))}
 
@@ -81,13 +96,13 @@ export function StartScreen({ onStart }: { onStart: () => void }) {
           transition={{ type: 'spring', stiffness: 120, damping: 15 }}
           style={{
             fontFamily: FONTS.display,
-            fontSize: 'clamp(3rem, 12vw, 8rem)',
-            fontWeight: 800,
+            fontSize: 'clamp(2rem, 7vw, 5rem)',
+            fontWeight: 700,
             color: PALETTE.primary,
             textShadow: 'var(--text-shadow-title)',
-            lineHeight: 1,
-            letterSpacing: '-0.02em',
-            marginBottom: '2rem',
+            lineHeight: 1.15,
+            letterSpacing: '0.02em',
+            marginBottom: '2.5rem',
           }}
         >
           {t('gameTitle')}
@@ -110,12 +125,20 @@ export function StartScreen({ onStart }: { onStart: () => void }) {
             }}
           >
             <motion.span
-              style={{ fontSize: '2rem' }}
+              style={{ fontSize: '2rem', width: '2rem', height: '2rem', display: 'inline-flex', alignItems: 'center' }}
               animate={reduceMotion ? undefined : { rotate: [0, 10, 0, -10, 0] }}
               transition={{ duration: 2, repeat: Infinity }}
               aria-hidden="true"
             >
-              {ingredients[0]?.emoji ?? '🍉'}
+              {ingredients[0]?.imageWhole ? (
+                <img
+                  src={ingredients[0].imageWhole}
+                  alt=""
+                  style={{ width: '100%', height: '100%', imageRendering: 'pixelated' }}
+                />
+              ) : (
+                ingredients[0]?.emoji ?? '🍉'
+              )}
             </motion.span>
             <span
               style={{
@@ -145,17 +168,18 @@ export function StartScreen({ onStart }: { onStart: () => void }) {
           aria-label={t('startGame')}
           style={{
             fontFamily: FONTS.display,
-            fontSize: 'clamp(1.75rem, 5vw, 3rem)',
+            fontSize: 'clamp(1rem, 3vw, 1.75rem)',
             fontWeight: 700,
             color: '#FFFFFF',
             background: 'var(--game-primary-gradient)',
-            padding: '1.5rem clamp(2rem, 8vw, 5rem)',
-            border: `3px solid ${PALETTE.secondary}`,
-            borderRadius: '100px',
+            padding: '1.25rem clamp(2rem, 6vw, 4rem)',
+            border: `4px solid ${PALETTE.secondary}`,
+            borderRadius: '8px',
             cursor: 'pointer',
             boxShadow: 'var(--shadow-cta)',
             position: 'relative',
             overflow: 'hidden',
+            letterSpacing: '0.05em',
           }}
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
