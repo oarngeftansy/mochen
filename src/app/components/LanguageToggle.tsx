@@ -22,10 +22,10 @@ export function LanguageToggle() {
         color: '#FFFFFF',
         background: PALETTE.primary,
         padding: '0.875rem 1.75rem',
-        border: `3px solid ${PALETTE.secondary}`,
+        border: `2px solid ${PALETTE.secondary}`,
         borderRadius: '100px',
         cursor: 'pointer',
-        boxShadow: '3px 3px 0 rgba(139,69,19,0.3)',
+        boxShadow: 'var(--shadow-pill)',
       }}
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}

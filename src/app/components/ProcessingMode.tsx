@@ -265,8 +265,8 @@ export function ProcessingMode({
           style={{
             cursor: knifeVisible ? 'none' : 'auto',
             background: 'linear-gradient(135deg, #D4A574 0%, #C19A6B 100%)',
-            border: `6px solid ${PALETTE.secondary}`,
-            boxShadow: '4px 4px 0 rgba(139,69,19,0.3), inset 0 2px 4px rgba(0,0,0,0.1)',
+            border: `4px solid ${PALETTE.secondary}`,
+            boxShadow: 'var(--shadow-card), inset 0 2px 4px rgba(0,0,0,0.1)',
           }}
           onMouseMove={handleMouseMove}
           onMouseDown={handleMouseDown}
@@ -503,8 +503,8 @@ export function ProcessingMode({
                 transition={{ delay: index * 0.1 }}
                 style={{
                   background: PALETTE.surface,
-                  border: `3px solid ${PALETTE.secondary}`,
-                  boxShadow: '3px 3px 0 rgba(139,69,19,0.2)',
+                  border: `2px solid ${PALETTE.secondary}`,
+                  boxShadow: 'var(--shadow-card)',
                   borderRadius: '12px',
                   padding: '0.5rem',
                 }}
@@ -772,8 +772,8 @@ function PlatingAnimation({
             height: '320px',
             borderRadius: '50%',
             background: 'radial-gradient(circle, #FFFFFF 0%, #F5F5F5 100%)',
-            border: `4px solid ${PALETTE.secondary}`,
-            boxShadow: '4px 4px 0 rgba(139,69,19,0.3)',
+            border: `3px solid ${PALETTE.secondary}`,
+            boxShadow: 'var(--shadow-card)',
           }}
         />
       </motion.div>

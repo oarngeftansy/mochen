@@ -1,0 +1,29 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "vite-dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "../pindouxiangmuwangzhan", "run", "dev"],
+      "port": 5173
+    },
+    {
+      "name": "portfolio-dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "../个人作品集网站", "run", "dev", "--", "--port", "5174"],
+      "port": 5174
+    },
+    {
+      "name": "block-blast",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "../block-blast", "run", "dev", "--", "--port", "5175"],
+      "port": 5175
+    },
+    {
+      "name": "oc-game",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["-y", "serve", "-l", "5180", "../oc-dressup-game"],
+      "port": 5180
+    }
+  ]
+}

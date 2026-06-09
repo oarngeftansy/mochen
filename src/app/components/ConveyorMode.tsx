@@ -473,8 +473,8 @@ export function ConveyorMode({
             background: isHolding
               ? `radial-gradient(circle, ${PALETTE.hold2} 0%, ${PALETTE.primary} 100%)`
               : `radial-gradient(circle, ${PALETTE.primary} 0%, ${PALETTE.primaryDark} 100%)`,
-            border: `4px solid ${PALETTE.secondary}`,
-            boxShadow: '0 6px 0 var(--game-primary-shadow), 4px 4px 0 rgba(139,69,19,0.3)',
+            border: `3px solid ${PALETTE.secondary}`,
+            boxShadow: 'var(--shadow-cta)',
             cursor: 'pointer',
             color: '#FFF',
             fontFamily: FONTS.display,
@@ -502,8 +502,8 @@ export function ConveyorMode({
             className="p-12 text-center rounded-3xl"
             style={{
               background: PALETTE.surface,
-              border: `4px solid ${PALETTE.secondary}`,
-              boxShadow: '6px 6px 0 rgba(139,69,19,0.3)',
+              border: `3px solid ${PALETTE.secondary}`,
+              boxShadow: 'var(--shadow-modal)',
               maxWidth: '500px',
             }}
             initial={{ scale: 0.8, y: 50 }}
@@ -557,10 +557,10 @@ export function ConveyorMode({
                 color: '#FFFFFF',
                 background: 'var(--game-primary-gradient)',
                 padding: '1rem 3rem',
-                border: `3px solid ${PALETTE.secondary}`,
+                border: `2px solid ${PALETTE.secondary}`,
                 borderRadius: '100px',
                 cursor: 'pointer',
-                boxShadow: `0 6px 0 ${PALETTE.primaryShadow}, 4px 4px 0 rgba(139,69,19,0.3)`,
+                boxShadow: 'var(--shadow-cta)',
               }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -588,8 +588,8 @@ function ScoreCard({
       className="px-6 py-3 rounded-2xl"
       style={{
         background: PALETTE.surface,
-        border: `3px solid ${PALETTE.secondary}`,
-        boxShadow: '3px 3px 0 rgba(139,69,19,0.2)',
+        border: `2px solid ${PALETTE.secondary}`,
+        boxShadow: 'var(--shadow-card)',
       }}
       whileHover={{ scale: 1.05 }}
     >

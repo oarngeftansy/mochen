@@ -90,29 +90,29 @@ export type { SfxKey, BgmKey } from './audio';
 /**
  * 游戏调色板。改这里 → theme.css 自动通过 CSS 变量同步到所有组件。
  *
- * 当前: 暖色卡通 / 烹饪主题。
+ * 当前: Cookbook Cozy(食谱本温馨)主题 — 偏暖低饱和、纸张纹理、柔和阴影。
  */
 export const PALETTE = {
-  primary: '#E74C3C',
-  primaryDark: '#C0392B',
-  primaryShadow: '#922B21',
-  secondary: '#8B4513',
-  bgLight: '#FFF8E7',
-  bgDark: '#F5E6D3',
+  primary: '#E07856',        // 烤番茄陶土色(降饱和,比鲜红耐看)
+  primaryDark: '#C56546',
+  primaryShadow: '#A04E36',
+  secondary: '#A88663',      // 浅烤面包棕(细描边用)
+  bgLight: '#FBF4E5',        // 奶油纸
+  bgDark: '#F2E6CC',         // 烤纸
   textDark: '#5D4037',
-  textMuted: '#8B4513',
-  surface: '#FFFFFF',
+  textMuted: '#9C7A4D',
+  surface: '#FFFBF2',        // 米白纸面
   /** 玩法状态色 */
-  tap: '#74B9FF',
-  hold: '#FFB8B8',
-  hold2: '#81FFAD',
+  tap: '#8FB8DE',            // 矢车菊蓝(柔)
+  hold: '#F4B5B0',           // 桃粉
+  hold2: '#B5D6A7',          // 鼠尾草绿
   /** 判定色 */
-  perfect: '#22C55E',
-  good: '#EAB308',
-  miss: '#EF4444',
-  combo: '#FF6B9D',
-  success: '#4CAF50',
-  warning: '#F39C12',
+  perfect: '#6BA67A',        // 鼠尾草绿
+  good: '#E6B450',           // 暖芥黄
+  miss: '#D75E5E',
+  combo: '#E89BB5',          // 玫瑰粉
+  success: '#7CB082',
+  warning: '#E69D40',        // 焦糖
 } as const;
 
 /* ------------------------------------------------------------------ */

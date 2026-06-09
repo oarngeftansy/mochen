@@ -30,10 +30,10 @@ export function StartScreen({ onStart }: { onStart: () => void }) {
     >
       {/* 纸张纹理 */}
       <div
-        className="absolute inset-0 opacity-[0.03]"
+        className="absolute inset-0 opacity-[0.06]"
         style={{
           backgroundImage:
-            'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(139,69,19,0.1) 2px, rgba(139,69,19,0.1) 4px)',
+            'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(107,68,35,0.12) 2px, rgba(107,68,35,0.12) 4px), repeating-linear-gradient(90deg, transparent, transparent 24px, rgba(107,68,35,0.05) 24px, rgba(107,68,35,0.05) 25px)',
         }}
         aria-hidden="true"
       />
@@ -81,7 +81,7 @@ export function StartScreen({ onStart }: { onStart: () => void }) {
             fontSize: 'clamp(3rem, 12vw, 8rem)',
             fontWeight: 800,
             color: PALETTE.primary,
-            textShadow: '4px 4px 0 rgba(139,69,19,0.15)',
+            textShadow: 'var(--text-shadow-title)',
             lineHeight: 1,
             letterSpacing: '-0.02em',
             marginBottom: '2rem',
@@ -101,8 +101,8 @@ export function StartScreen({ onStart }: { onStart: () => void }) {
             className="flex items-center gap-3 px-8 py-4 rounded-full"
             style={{
               background: PALETTE.surface,
-              border: `3px solid ${PALETTE.secondary}`,
-              boxShadow: '3px 3px 0 rgba(139,69,19,0.2)',
+              border: `2px solid ${PALETTE.secondary}`,
+              boxShadow: 'var(--shadow-pill)',
               maxWidth: '90vw',
             }}
           >
@@ -147,10 +147,10 @@ export function StartScreen({ onStart }: { onStart: () => void }) {
             color: '#FFFFFF',
             background: 'var(--game-primary-gradient)',
             padding: '1.5rem clamp(2rem, 8vw, 5rem)',
-            border: `4px solid ${PALETTE.secondary}`,
+            border: `3px solid ${PALETTE.secondary}`,
             borderRadius: '100px',
             cursor: 'pointer',
-            boxShadow: `0 8px 0 ${PALETTE.primaryShadow}, 4px 4px 0 rgba(139,69,19,0.3)`,
+            boxShadow: 'var(--shadow-cta)',
             position: 'relative',
             overflow: 'hidden',
           }}

@@ -80,8 +80,8 @@ export function ResultsScreen({
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
-                border: `4px solid ${PALETTE.secondary}`,
-                boxShadow: '4px 4px 0 rgba(139,69,19,0.3)',
+                border: `3px solid ${PALETTE.secondary}`,
+                boxShadow: 'var(--shadow-card)',
                 position: 'relative',
               }}
             >
@@ -157,11 +157,11 @@ export function ResultsScreen({
         transition={{ delay: plates.length * 0.2 + 0.5 }}
         style={{
           background: PALETTE.surface,
-          border: `3px solid ${PALETTE.secondary}`,
+          border: `2px solid ${PALETTE.secondary}`,
           borderRadius: '100px',
           padding: '1.5rem 3rem',
           marginBottom: '2rem',
-          boxShadow: '3px 3px 0 rgba(139,69,19,0.2)',
+          boxShadow: 'var(--shadow-pill)',
         }}
       >
         <p
@@ -191,10 +191,10 @@ export function ResultsScreen({
           color: '#FFFFFF',
           background: 'var(--game-primary-gradient)',
           padding: '1.5rem 4rem',
-          border: `4px solid ${PALETTE.secondary}`,
+          border: `3px solid ${PALETTE.secondary}`,
           borderRadius: '100px',
           cursor: 'pointer',
-          boxShadow: `0 6px 0 ${PALETTE.primaryShadow}, 4px 4px 0 rgba(139,69,19,0.3)`,
+          boxShadow: 'var(--shadow-cta)',
         }}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
