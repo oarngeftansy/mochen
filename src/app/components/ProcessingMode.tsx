@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { motion, useReducedMotion } from 'motion/react';
+import { motion, useMotionValue, useReducedMotion } from 'motion/react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useConfig } from '../contexts/ConfigContext';
 import { GAMEPLAY, PALETTE, FONTS } from '../../config/assets';
@@ -12,6 +12,8 @@ type Slice = {
   x: number;
   y: number;
   rotation: number;
+  /** 缩放(摆盘编辑器调整) */
+  scale?: number;
   cutType: CutType;
   selected?: boolean;
   ingredientId: string;
@@ -45,6 +47,10 @@ export function ProcessingMode({
   const [completedPlates, setCompletedPlates] = useState<CompletedPlate[]>([]);
   const [cutPath, setCutPath] = useState<CutPath[]>([]);
   const [isDrawing, setIsDrawing] = useState(false);
+  /** 摆盘编辑器:玩家手动调切片位置/旋转/缩放 */
+  const [isEditingPlate, setIsEditingPlate] = useState(false);
+  const [editingSlices, setEditingSlices] = useState<Slice[]>([]);
+  const [selectedEditId, setSelectedEditId] = useState<string | null>(null);
 
   const boardRef = useRef<HTMLDivElement>(null);
   const audioRefs = useRef<Record<string, HTMLAudioElement>>({});
@@ -89,13 +95,13 @@ export function ProcessingMode({
     const rect = boardRef.current.getBoundingClientRect();
     const pos = { x: e.clientX - rect.left, y: e.clientY - rect.top };
     setKnifePos(pos);
-    if (isDrawing && !isPlating) {
+    if (isDrawing && !isPlating && !isEditingPlate) {
       setCutPath((prev) => [...prev, pos]);
     }
   };
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!boardRef.current || !currentCfg || isPlating) return;
+    if (!boardRef.current || !currentCfg || isPlating || isEditingPlate) return;
     const sameSliceCount = slices.filter((s) => s.ingredientId === currentCfg.id).length;
     if (sameSliceCount >= GAMEPLAY.maxSlicesPerIngredient) return;
 
@@ -106,7 +112,7 @@ export function ProcessingMode({
   };
 
   const handleMouseUp = () => {
-    if (isDrawing && cutPath.length > 5 && !isPlating && currentCfg) {
+    if (isDrawing && cutPath.length > 5 && !isPlating && !isEditingPlate && currentCfg) {
       const cutType = analyzeCutType(cutPath);
       playSound('cut');
       // 切片在整颗外围沿圆周均匀排布(花瓣布局),不放在用户划线的位置
@@ -211,47 +217,83 @@ export function ProcessingMode({
     }, 2000);
   };
 
-  /** 摆盘动画完成后该做什么:推进下一个 / 触发结算 / 不动 */
+  /** 摆盘完成后该做什么 */
   const [pendingAdvance, setPendingAdvance] = useState<'next' | 'finish' | null>(null);
 
-  /** 摆盘动画跑完(isPlating 从 true → false)且有待办时,执行待办动作 */
-  useEffect(() => {
-    if (pendingAdvance && !isPlating) {
-      const action = pendingAdvance;
-      setPendingAdvance(null);
-      if (action === 'next') {
+  /** 进入摆盘编辑器: 初始把切片排在圆盘外围,玩家自己拖拽 */
+  const enterPlateEditor = (advanceMode: 'next' | 'finish') => {
+    const cs = slices.filter((s) => s.ingredientId === currentCfg.id);
+    if (cs.length === 0) {
+      // 没切片直接推进
+      if (advanceMode === 'next') {
         setCurrentIdx((p) => p + 1);
-        setIsSelecting(false);
       } else {
         playSound('complete');
-        setTimeout(() => onComplete(completedPlates), 400);
+        setTimeout(() => onComplete(completedPlates), 300);
       }
+      return;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pendingAdvance, isPlating, completedPlates]);
+    const cx = 300;
+    const cy = 200;
+    const r = 70;
+    const initial: Slice[] = cs.map((s, i) => {
+      const angle = -Math.PI / 2 + (i * 2 * Math.PI) / cs.length;
+      return {
+        ...s,
+        x: cx + r * Math.cos(angle),
+        y: cy + r * Math.sin(angle),
+        rotation: s.rotation,
+        scale: 1,
+      };
+    });
+    setEditingSlices(initial);
+    setSelectedEditId(null);
+    setIsEditingPlate(true);
+    setPendingAdvance(advanceMode);
+  };
+
+  const updateEditingSlice = (id: string, patch: Partial<Slice>) => {
+    setEditingSlices((prev) => prev.map((s) => (s.id === id ? { ...s, ...patch } : s)));
+  };
+
+  const confirmPlateEditor = () => {
+    if (editingSlices.length === 0) return;
+    const newPlate: CompletedPlate = {
+      id: `plate-${Date.now()}`,
+      slices: editingSlices,
+    };
+    const ids = new Set(editingSlices.map((s) => s.id));
+    const nextPlates = [...completedPlates, newPlate];
+    setCompletedPlates(nextPlates);
+    setSlices((prev) => prev.filter((s) => !ids.has(s.id)));
+    setIsEditingPlate(false);
+    setEditingSlices([]);
+    setSelectedEditId(null);
+    playSound('plate');
+
+    if (pendingAdvance === 'next' && currentIdx < ingredients.length - 1) {
+      setCurrentIdx((p) => p + 1);
+    } else if (pendingAdvance === 'finish') {
+      playSound('complete');
+      setTimeout(() => onComplete(nextPlates), 400);
+    }
+    setPendingAdvance(null);
+  };
+
+  const cancelPlateEditor = () => {
+    setIsEditingPlate(false);
+    setEditingSlices([]);
+    setSelectedEditId(null);
+    setPendingAdvance(null);
+  };
 
   const handleNext = () => {
     if (currentIdx >= ingredients.length - 1) return;
-    const cs = slices.filter((s) => s.ingredientId === currentCfg.id);
-    if (cs.length > 0) {
-      // 触发摆盘动画(2 秒),用 effect 接续推进
-      autoPlate(cs);
-      setPendingAdvance('next');
-    } else {
-      setCurrentIdx((p) => p + 1);
-      setIsSelecting(false);
-    }
+    enterPlateEditor('next');
   };
 
   const handleFinish = () => {
-    const cs = slices.filter((s) => s.ingredientId === currentCfg.id);
-    if (cs.length > 0) {
-      autoPlate(cs);
-      setPendingAdvance('finish');
-    } else {
-      playSound('complete');
-      setTimeout(() => onComplete(completedPlates), 400);
-    }
+    enterPlateEditor('finish');
   };
 
   if (!currentCfg) return null;
@@ -297,7 +339,7 @@ export function ProcessingMode({
           ref={boardRef}
           className="w-[600px] h-[400px] rounded-xl relative overflow-hidden"
           style={{
-            cursor: knifeVisible ? 'none' : 'auto',
+            cursor: isEditingPlate ? 'default' : knifeVisible ? 'none' : 'auto',
             background: 'linear-gradient(135deg, #D4A574 0%, #C19A6B 100%)',
             border: `4px solid ${PALETTE.secondary}`,
             boxShadow: 'var(--shadow-card), inset 0 2px 4px rgba(0,0,0,0.1)',
@@ -322,8 +364,8 @@ export function ProcessingMode({
             </svg>
           </div>
 
-          {/* 完整食材 — 一直显示,直到 5 刀切完 */}
-          {!isPlating && currentCfg && currentSliceCount < GAMEPLAY.maxSlicesPerIngredient && (
+          {/* 完整食材 — 一直显示,直到 5 刀切完。编辑摆盘时隐藏 */}
+          {!isPlating && !isEditingPlate && currentCfg && currentSliceCount < GAMEPLAY.maxSlicesPerIngredient && (
             <motion.div
               key={`whole-${currentCfg.id}`}
               className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
@@ -359,8 +401,8 @@ export function ProcessingMode({
             </motion.div>
           )}
 
-          {/* 切片中: 每片从整颗中心飞向自己的花瓣位置 */}
-          {!isPlating &&
+          {/* 切片中: 每片从整颗中心飞向自己的花瓣位置。编辑摆盘时隐藏(切片改由编辑器渲染) */}
+          {!isPlating && !isEditingPlate &&
             slices.map((slice) => {
               const cfg = getIngredient(slice.ingredientId);
               if (!cfg) return null;
@@ -416,9 +458,21 @@ export function ProcessingMode({
               );
             })}
 
-          {/* 摆盘动画 */}
+          {/* 摆盘动画 (老路径,目前不再触发,留作 fallback) */}
           {isPlating && (
             <PlatingAnimation platedSlices={platedSlices} reduceMotion={!!reduceMotion} language={language} />
+          )}
+
+          {/* 摆盘编辑器: 玩家自己摆 */}
+          {isEditingPlate && (
+            <PlatingEditor
+              slices={editingSlices}
+              selectedId={selectedEditId}
+              onSelect={setSelectedEditId}
+              onChange={updateEditingSlice}
+              language={language}
+              getIngredient={getIngredient}
+            />
           )}
 
           {/* 切割轨迹 */}
@@ -450,7 +504,7 @@ export function ProcessingMode({
           )}
 
           {/* 菜刀光标 (仅在板内可见) */}
-          {knifeVisible && (
+          {knifeVisible && !isEditingPlate && (
             <motion.div
               className="absolute pointer-events-none"
               style={{
@@ -470,7 +524,17 @@ export function ProcessingMode({
 
         {/* 操作提示 */}
         <div className="mt-6 text-center">
-          {!isPlating ? (
+          {isEditingPlate ? (
+            <PlatingToolbar
+              selected={editingSlices.find((s) => s.id === selectedEditId) ?? null}
+              onChange={updateEditingSlice}
+              onConfirm={confirmPlateEditor}
+              onCancel={cancelPlateEditor}
+              sliceCount={editingSlices.length}
+              isLast={currentIdx === ingredients.length - 1}
+              t={t}
+            />
+          ) : !isPlating ? (
             <>
               <p
                 style={{
@@ -513,14 +577,15 @@ export function ProcessingMode({
               </div>
 
               <div className="flex gap-4 justify-center mt-6 flex-wrap">
-                {slices.length >= GAMEPLAY.minSlicesToPlate && (
-                  <PrimaryBtn onClick={() => setIsSelecting(true)}>{t('selectSlices')}</PrimaryBtn>
-                )}
                 {currentIdx < ingredients.length - 1 && (
-                  <SecondaryBtn onClick={handleNext}>{t('nextIngredient')} →</SecondaryBtn>
+                  <PrimaryBtn onClick={handleNext}>
+                    {currentSliceCount > 0 ? `${t('startPlating')} →` : `${t('nextIngredient')} →`}
+                  </PrimaryBtn>
                 )}
                 {currentIdx === ingredients.length - 1 && (
-                  <PrimaryBtn onClick={handleFinish}>✓ {t('finishAll')}</PrimaryBtn>
+                  <PrimaryBtn onClick={handleFinish}>
+                    {currentSliceCount > 0 ? `${t('startPlating')} ✓` : `${t('finishAll')} ✓`}
+                  </PrimaryBtn>
                 )}
               </div>
             </>
@@ -928,5 +993,309 @@ function PlatingAnimation({
         );
       })}
     </>
+  );
+}
+
+/* ================================================================== */
+/* PlatingEditor: 玩家自己摆切片 (drag-to-move + click-to-select)       */
+/* ================================================================== */
+
+function PlatingEditor({
+  slices,
+  selectedId,
+  onSelect,
+  onChange,
+  language,
+  getIngredient,
+}: {
+  slices: Slice[];
+  selectedId: string | null;
+  onSelect: (id: string | null) => void;
+  onChange: (id: string, patch: Partial<Slice>) => void;
+  language: 'zh' | 'en';
+  getIngredient: (id: string) => ReturnType<typeof useConfig>['ingredients'][number] | undefined;
+}) {
+  return (
+    <>
+      {/* 白盘背景 */}
+      <motion.div
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+        initial={{ scale: 0, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ type: 'spring', stiffness: 220, damping: 20 }}
+      >
+        <div
+          style={{
+            width: '300px',
+            height: '300px',
+            borderRadius: '50%',
+            background: 'radial-gradient(circle, #FFFFFF 0%, #F2F2F2 100%)',
+            border: `3px solid ${PALETTE.secondary}`,
+          }}
+        />
+      </motion.div>
+
+      {/* 点空白处取消选中 */}
+      <div
+        className="absolute inset-0"
+        style={{ zIndex: 1 }}
+        onPointerDown={() => onSelect(null)}
+      />
+
+      {/* 切片本身 */}
+      {slices.map((slice) => {
+        const cfg = getIngredient(slice.ingredientId);
+        if (!cfg) return null;
+        return (
+          <DraggableSlice
+            key={slice.id}
+            slice={slice}
+            selected={selectedId === slice.id}
+            onSelect={() => onSelect(slice.id)}
+            onChange={(patch) => onChange(slice.id, patch)}
+            cfg={cfg}
+            language={language}
+          />
+        );
+      })}
+    </>
+  );
+}
+
+function DraggableSlice({
+  slice,
+  selected,
+  onSelect,
+  onChange,
+  cfg,
+  language,
+}: {
+  slice: Slice;
+  selected: boolean;
+  onSelect: () => void;
+  onChange: (patch: Partial<Slice>) => void;
+  cfg: ReturnType<typeof useConfig>['ingredients'][number];
+  language: 'zh' | 'en';
+}) {
+  const baseSize = 80;
+  const scale = slice.scale ?? 1;
+  const x = useMotionValue(slice.x);
+  const y = useMotionValue(slice.y);
+  const draggedRef = useRef(false);
+
+  // 外部 slice.x/y 变了同步进 MotionValue
+  useEffect(() => {
+    x.set(slice.x);
+  }, [slice.x, x]);
+  useEffect(() => {
+    y.set(slice.y);
+  }, [slice.y, y]);
+
+  return (
+    <motion.div
+      style={{
+        position: 'absolute',
+        left: 0,
+        top: 0,
+        x,
+        y,
+        translateX: '-50%',
+        translateY: '-50%',
+        zIndex: selected ? 10 : 5,
+        cursor: 'grab',
+      }}
+      animate={{
+        rotate: slice.rotation,
+        scale,
+      }}
+      transition={{ type: 'spring', stiffness: 300, damping: 28 }}
+      drag
+      dragMomentum={false}
+      whileDrag={{ cursor: 'grabbing', zIndex: 20 }}
+      onDragStart={() => {
+        draggedRef.current = true;
+      }}
+      onDragEnd={() => {
+        onChange({ x: x.get(), y: y.get() });
+        // 拖完短暂保留 dragged 标志,避免触发 click → 取消选中
+        setTimeout(() => {
+          draggedRef.current = false;
+        }, 50);
+      }}
+      onPointerDown={(e) => {
+        e.stopPropagation();
+      }}
+      onClick={(e) => {
+        e.stopPropagation();
+        if (draggedRef.current) return;
+        onSelect();
+      }}
+    >
+      <img
+        src={cfg.imageSliced ?? cfg.imageWhole}
+        alt={cfg.name[language]}
+        style={{
+          width: `${baseSize}px`,
+          height: `${baseSize}px`,
+          imageRendering: 'pixelated',
+          objectFit: 'contain',
+          pointerEvents: 'none',
+          userSelect: 'none',
+        }}
+        draggable={false}
+      />
+      {selected && (
+        <div
+          style={{
+            position: 'absolute',
+            inset: -6,
+            border: `2px dashed ${PALETTE.primary}`,
+            borderRadius: '8px',
+            pointerEvents: 'none',
+          }}
+        />
+      )}
+    </motion.div>
+  );
+}
+
+/* ================================================================== */
+/* PlatingToolbar: 编辑器底部工具栏                                       */
+/* ================================================================== */
+
+function PlatingToolbar({
+  selected,
+  onChange,
+  onConfirm,
+  onCancel,
+  sliceCount,
+  isLast,
+  t,
+}: {
+  selected: Slice | null;
+  onChange: (id: string, patch: Partial<Slice>) => void;
+  onConfirm: () => void;
+  onCancel: () => void;
+  sliceCount: number;
+  isLast: boolean;
+  t: (key: string, values?: Record<string, string | number>) => string;
+}) {
+  const sel = selected;
+  const scale = sel?.scale ?? 1;
+
+  return (
+    <div className="flex flex-col items-center gap-3">
+      <p
+        style={{
+          fontFamily: FONTS.body,
+          fontSize: '0.875rem',
+          fontWeight: 600,
+          color: PALETTE.textMuted,
+        }}
+      >
+        {t('platingEditorHint')}
+      </p>
+
+      {/* 编辑工具按钮:只有选中了某片才启用 */}
+      <div className="flex items-center gap-2 flex-wrap justify-center">
+        <ToolBtn
+          disabled={!sel}
+          onClick={() => sel && onChange(sel.id, { rotation: sel.rotation - 15 })}
+          title="↺ −15°"
+        >
+          ↺
+        </ToolBtn>
+        <ToolBtn
+          disabled={!sel}
+          onClick={() => sel && onChange(sel.id, { rotation: sel.rotation + 15 })}
+          title="↻ +15°"
+        >
+          ↻
+        </ToolBtn>
+        <ToolBtn
+          disabled={!sel}
+          onClick={() =>
+            sel && onChange(sel.id, { scale: Math.max(0.4, (sel.scale ?? 1) - 0.1) })
+          }
+          title="−"
+        >
+          −
+        </ToolBtn>
+        <span
+          style={{
+            fontFamily: FONTS.numeric,
+            fontWeight: 700,
+            color: sel ? PALETTE.textDark : PALETTE.textMuted,
+            minWidth: '52px',
+            textAlign: 'center',
+            fontSize: '0.875rem',
+            fontVariantNumeric: 'tabular-nums',
+          }}
+        >
+          {Math.round(scale * 100)}%
+        </span>
+        <ToolBtn
+          disabled={!sel}
+          onClick={() =>
+            sel && onChange(sel.id, { scale: Math.min(2.5, (sel.scale ?? 1) + 0.1) })
+          }
+          title="+"
+        >
+          +
+        </ToolBtn>
+        <ToolBtn
+          disabled={!sel}
+          onClick={() => sel && onChange(sel.id, { rotation: 0, scale: 1 })}
+          title={t('resetLabel')}
+        >
+          {t('resetLabel')}
+        </ToolBtn>
+      </div>
+
+      <div className="flex gap-3 mt-2 flex-wrap justify-center">
+        <SecondaryBtn onClick={onCancel}>{t('continueSlicing')}</SecondaryBtn>
+        <PrimaryBtn onClick={onConfirm}>
+          {isLast
+            ? `${t('confirmPlating')} ${t('finishAll')} ✓`
+            : `${t('confirmPlating')} (${sliceCount}) →`}
+        </PrimaryBtn>
+      </div>
+    </div>
+  );
+}
+
+function ToolBtn({
+  children,
+  onClick,
+  disabled,
+  title,
+}: {
+  children: React.ReactNode;
+  onClick: () => void;
+  disabled?: boolean;
+  title?: string;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      title={title}
+      style={{
+        padding: '0.5rem 0.875rem',
+        fontFamily: FONTS.display,
+        fontSize: '1rem',
+        fontWeight: 700,
+        color: disabled ? PALETTE.textMuted : '#FFFFFF',
+        background: disabled ? 'rgba(0,0,0,0.08)' : PALETTE.primary,
+        border: `2px solid ${PALETTE.secondary}`,
+        borderRadius: '8px',
+        cursor: disabled ? 'not-allowed' : 'pointer',
+        boxShadow: disabled ? 'none' : 'var(--shadow-pill)',
+        minWidth: '40px',
+      }}
+    >
+      {children}
+    </button>
   );
 }
