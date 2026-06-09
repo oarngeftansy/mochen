@@ -54,8 +54,8 @@ const ConfigContext = createContext<ConfigContextValue | null>(null);
 /* Defaults helper                                                      */
 /* ------------------------------------------------------------------ */
 
-// v2: 切到 Cookbook Flat 调色板,旧 v1 overrides 自动失效
-const STORAGE_KEY = 'game-config-overrides:v2';
+// v3: 切到 Stardew/Pixel 调色板,旧 overrides 自动失效
+const STORAGE_KEY = 'game-config-overrides:v3';
 
 function getDefaults(): ConfigState {
   return {

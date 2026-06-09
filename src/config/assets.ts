@@ -88,33 +88,33 @@ export type { SfxKey, BgmKey } from './audio';
 /* ------------------------------------------------------------------ */
 
 /**
- * 游戏调色板 — Sketchbook Sim 风(类 Hay Day / Cooking Mama):
- * - sage 绿背景(像桌布 / 草坪)
- * - 奶油色卡片
- * - 深棕墨水描边
- * - 完全无阴影,靠描边和颜色对比建立层次
+ * 游戏调色板 — Stardew Valley / Nintendo 像素风:
+ * - 鲜亮草绿背景(像 Stardew 草地)
+ * - 厚重深棕描边 + 像素步阶硬阴影
+ * - 高饱和原色 CTA(番茄红 / 蛋黄)
+ * - 米色羊皮纸卡片
  */
 export const PALETTE = {
-  primary: '#D67152',        // 哑光陶土(主 CTA)
-  primaryDark: '#B85E3F',
-  primaryShadow: '#6B4A2E',  // 现在做内描边用,不做投影
-  secondary: '#5C3E2A',      // 深墨水棕(细勾边)
-  bgLight: '#B5C9A5',        // sage 绿背景
-  bgDark: '#9DB58E',         // sage 深一点
-  textDark: '#4A3422',
-  textMuted: '#8B7355',
-  surface: '#FAEFD5',        // 奶油纸卡片
-  /** 玩法状态色 — 平面 pastel */
-  tap: '#A8C7E3',
-  hold: '#E8B5A8',
-  hold2: '#B8D4A8',
-  /** 判定色 — 都用低饱和 */
-  perfect: '#7CA56C',
-  good: '#D9A852',
-  miss: '#C56A5A',
-  combo: '#D89BA0',
-  success: '#88B07C',
-  warning: '#D49850',
+  primary: '#E84A3F',        // 番茄红(高饱和、显眼)
+  primaryDark: '#B5342B',
+  primaryShadow: '#3D2817',  // 深森林棕(做像素步阶硬阴影)
+  secondary: '#3D2817',      // 深森林棕(厚描边)
+  bgLight: '#88BC5A',        // 鲜草绿
+  bgDark: '#6FA248',         // 深一阶
+  textDark: '#3D2817',
+  textMuted: '#6B4A2E',
+  surface: '#FBE8A6',        // Stardew 信纸黄
+  /** 玩法状态色 */
+  tap: '#4FA3D8',            // 鲜天空蓝
+  hold: '#E89B5A',           // 橙
+  hold2: '#7CC76E',          // 草绿(蓄力进度环)
+  /** 判定色 — 像素游戏的鲜艳判定 */
+  perfect: '#5BBF4A',
+  good: '#F2C84B',
+  miss: '#E84A3F',
+  combo: '#F26BAE',
+  success: '#5BBF4A',
+  warning: '#F2A03A',
 } as const;
 
 /* ------------------------------------------------------------------ */
@@ -122,7 +122,8 @@ export const PALETTE = {
 /* ------------------------------------------------------------------ */
 
 export const FONTS = {
-  display: "'Baloo 2', 'Noto Sans SC', cursive",
+  /** 标题字体 — 像素 sans (西文) + 圆润 sans-serif (中文 fallback) */
+  display: "'Pixelify Sans', 'Noto Sans SC', sans-serif",
   body: "'Quicksand', 'Noto Sans SC', sans-serif",
   numeric: "'Nunito', 'Noto Sans SC', sans-serif",
 } as const;

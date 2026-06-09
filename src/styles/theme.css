@@ -9,37 +9,35 @@
 :root {
   --font-size: 16px;
 
-  /* === 游戏调色板 — Sketchbook Sim (sage + cream + dark-ink outline) === */
-  --game-primary: #D67152;
-  --game-primary-dark: #B85E3F;
-  --game-primary-shadow: #6B4A2E;
-  --game-secondary: #5C3E2A;
-  --game-bg-light: #B5C9A5;
-  --game-bg-dark: #9DB58E;
-  --game-text-dark: #4A3422;
-  --game-text-muted: #8B7355;
-  --game-surface: #FAEFD5;
-  --game-tap: #A8C7E3;
-  --game-hold: #E8B5A8;
-  --game-hold-2: #B8D4A8;
-  --game-perfect: #7CA56C;
-  --game-good: #D9A852;
-  --game-miss: #C56A5A;
-  --game-combo: #D89BA0;
-  --game-success: #88B07C;
-  --game-warning: #D49850;
+  /* === 游戏调色板 — Stardew/Nintendo Pixel (sat'd + thick outline + hard step shadow) === */
+  --game-primary: #E84A3F;
+  --game-primary-dark: #B5342B;
+  --game-primary-shadow: #3D2817;
+  --game-secondary: #3D2817;
+  --game-bg-light: #88BC5A;
+  --game-bg-dark: #6FA248;
+  --game-text-dark: #3D2817;
+  --game-text-muted: #6B4A2E;
+  --game-surface: #FBE8A6;
+  --game-tap: #4FA3D8;
+  --game-hold: #E89B5A;
+  --game-hold-2: #7CC76E;
+  --game-perfect: #5BBF4A;
+  --game-good: #F2C84B;
+  --game-miss: #E84A3F;
+  --game-combo: #F26BAE;
+  --game-success: #5BBF4A;
+  --game-warning: #F2A03A;
 
-  --game-bg-gradient: linear-gradient(180deg, var(--game-bg-light) 0%, var(--game-bg-dark) 100%);
-  /* 平面化 — sketchbook 风格按钮用纯色填充,不再做渐变 */
+  --game-bg-gradient: var(--game-bg-light);
   --game-primary-gradient: var(--game-primary);
 
-  /* === 阴影 token — flat sketchbook,无阴影。
-        保留 token 名以兼容现有引用,值全部置 none。 === */
-  --shadow-cta: none;
-  --shadow-card: none;
-  --shadow-pill: none;
-  --shadow-modal: none;
-  --text-shadow-title: none;
+  /* === 像素步阶硬阴影 token (Stardew/Nintendo 风,无 blur) === */
+  --shadow-cta: 4px 4px 0 var(--game-secondary);
+  --shadow-card: 3px 3px 0 var(--game-secondary);
+  --shadow-pill: 2px 2px 0 var(--game-secondary);
+  --shadow-modal: 6px 6px 0 var(--game-secondary);
+  --text-shadow-title: 3px 3px 0 var(--game-secondary);
 
   /* === 字体 (与 PALETTE FONTS 对应) === */
   --font-display: 'Baloo 2', 'Noto Sans SC', cursive;

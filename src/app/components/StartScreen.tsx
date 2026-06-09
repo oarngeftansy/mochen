@@ -29,11 +29,14 @@ export function StartScreen({ onStart }: { onStart: () => void }) {
       style={{ background: 'var(--game-bg-gradient)' }}
     >
       {/* 纸张纹理 */}
+      {/* 像素草地纹理 — 用 radial-gradient 模拟草点 */}
       <div
-        className="absolute inset-0 opacity-[0.06]"
+        className="absolute inset-0"
         style={{
           backgroundImage:
-            'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(107,68,35,0.12) 2px, rgba(107,68,35,0.12) 4px), repeating-linear-gradient(90deg, transparent, transparent 24px, rgba(107,68,35,0.05) 24px, rgba(107,68,35,0.05) 25px)',
+            'radial-gradient(circle at 8px 8px, rgba(61,40,23,0.18) 1.5px, transparent 2px), radial-gradient(circle at 24px 24px, rgba(255,255,255,0.12) 1.5px, transparent 2px)',
+          backgroundSize: '32px 32px, 32px 32px',
+          backgroundPosition: '0 0, 16px 16px',
         }}
         aria-hidden="true"
       />
