@@ -211,17 +211,53 @@ export function ProcessingMode({
     }, 2000);
   };
 
+  /** 把当前食材的所有切片自动摆成一盘 (不带动画,即时) */
+  const flushCurrentSlicesToPlate = (
+    currentSlices: Slice[],
+    plates: CompletedPlate[],
+  ): CompletedPlate[] => {
+    if (currentSlices.length === 0) return plates;
+    // 简化布局: 围成圆 (摆盘动画走的是 autoPlate,这里只填数据)
+    const cx = 300;
+    const cy = 200;
+    const r = 80;
+    const placed = currentSlices.map((s, i) => {
+      const angle = -Math.PI / 2 + (i * 2 * Math.PI) / currentSlices.length;
+      return {
+        ...s,
+        x: cx + r * Math.cos(angle),
+        y: cy + r * Math.sin(angle),
+        rotation: s.rotation,
+      };
+    });
+    return [...plates, { id: `plate-${Date.now()}`, slices: placed }];
+  };
+
   const handleNext = () => {
-    if (currentIdx < ingredients.length - 1) {
-      setCurrentIdx((p) => p + 1);
-      setIsPlating(false);
-      setIsSelecting(false);
+    if (currentIdx >= ingredients.length - 1) return;
+    const cs = slices.filter((s) => s.ingredientId === currentCfg.id);
+    if (cs.length > 0) {
+      const nextPlates = flushCurrentSlicesToPlate(cs, completedPlates);
+      setCompletedPlates(nextPlates);
+      setSlices((prev) => prev.filter((s) => s.ingredientId !== currentCfg.id));
+      playSound('plate');
     }
+    setCurrentIdx((p) => p + 1);
+    setIsPlating(false);
+    setIsSelecting(false);
   };
 
   const handleFinish = () => {
+    const cs = slices.filter((s) => s.ingredientId === currentCfg.id);
+    const finalPlates =
+      cs.length > 0 ? flushCurrentSlicesToPlate(cs, completedPlates) : completedPlates;
+    if (cs.length > 0) {
+      setCompletedPlates(finalPlates);
+      setSlices((prev) => prev.filter((s) => s.ingredientId !== currentCfg.id));
+      playSound('plate');
+    }
     playSound('complete');
-    setTimeout(() => onComplete(completedPlates), 500);
+    setTimeout(() => onComplete(finalPlates), 500);
   };
 
   if (!currentCfg) return null;
