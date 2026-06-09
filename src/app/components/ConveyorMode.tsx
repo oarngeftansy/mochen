@@ -314,24 +314,28 @@ export function ConveyorMode({
         ))}
       </AnimatePresence>
 
-      {/* 传送带轨道 */}
+      {/* 传送带轨道 — 砧板木纹 + 厚描边 */}
       <div
         className="absolute top-1/2 -translate-y-1/2 w-full"
         style={{
           height: '200px',
-          background: 'rgba(0,0,0,0.15)',
-          borderTop: '4px solid rgba(255,255,255,0.2)',
-          borderBottom: '4px solid rgba(255,255,255,0.2)',
+          background: '#D4A574',
+          borderTop: `4px solid ${PALETTE.secondary}`,
+          borderBottom: `4px solid ${PALETTE.secondary}`,
         }}
       >
-        {/* 传送带条纹 */}
-        <div className="absolute inset-0 overflow-hidden opacity-30">
-          {Array.from({ length: 30 }).map((_, i) => (
+        {/* 像素条纹: 实色窄条向左移动,匹配食材方向 */}
+        <div className="absolute inset-0 overflow-hidden">
+          {Array.from({ length: 40 }).map((_, i) => (
             <motion.div
               key={i}
-              className="absolute h-full w-12 bg-white/10"
-              style={{ left: `${i * 60}px` }}
-              animate={reduceMotion ? undefined : { x: [-60, 0] }}
+              className="absolute h-full"
+              style={{
+                left: `${i * 48}px`,
+                width: '16px',
+                background: '#B5895A',
+              }}
+              animate={reduceMotion ? undefined : { x: [0, -48] }}
               transition={{ duration: 0.8, repeat: Infinity, ease: 'linear' }}
             />
           ))}
