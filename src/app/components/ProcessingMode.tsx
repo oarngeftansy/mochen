@@ -211,53 +211,47 @@ export function ProcessingMode({
     }, 2000);
   };
 
-  /** 把当前食材的所有切片自动摆成一盘 (不带动画,即时) */
-  const flushCurrentSlicesToPlate = (
-    currentSlices: Slice[],
-    plates: CompletedPlate[],
-  ): CompletedPlate[] => {
-    if (currentSlices.length === 0) return plates;
-    // 简化布局: 围成圆 (摆盘动画走的是 autoPlate,这里只填数据)
-    const cx = 300;
-    const cy = 200;
-    const r = 80;
-    const placed = currentSlices.map((s, i) => {
-      const angle = -Math.PI / 2 + (i * 2 * Math.PI) / currentSlices.length;
-      return {
-        ...s,
-        x: cx + r * Math.cos(angle),
-        y: cy + r * Math.sin(angle),
-        rotation: s.rotation,
-      };
-    });
-    return [...plates, { id: `plate-${Date.now()}`, slices: placed }];
-  };
+  /** 摆盘动画完成后该做什么:推进下一个 / 触发结算 / 不动 */
+  const [pendingAdvance, setPendingAdvance] = useState<'next' | 'finish' | null>(null);
+
+  /** 摆盘动画跑完(isPlating 从 true → false)且有待办时,执行待办动作 */
+  useEffect(() => {
+    if (pendingAdvance && !isPlating) {
+      const action = pendingAdvance;
+      setPendingAdvance(null);
+      if (action === 'next') {
+        setCurrentIdx((p) => p + 1);
+        setIsSelecting(false);
+      } else {
+        playSound('complete');
+        setTimeout(() => onComplete(completedPlates), 400);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pendingAdvance, isPlating, completedPlates]);
 
   const handleNext = () => {
     if (currentIdx >= ingredients.length - 1) return;
     const cs = slices.filter((s) => s.ingredientId === currentCfg.id);
     if (cs.length > 0) {
-      const nextPlates = flushCurrentSlicesToPlate(cs, completedPlates);
-      setCompletedPlates(nextPlates);
-      setSlices((prev) => prev.filter((s) => s.ingredientId !== currentCfg.id));
-      playSound('plate');
+      // 触发摆盘动画(2 秒),用 effect 接续推进
+      autoPlate(cs);
+      setPendingAdvance('next');
+    } else {
+      setCurrentIdx((p) => p + 1);
+      setIsSelecting(false);
     }
-    setCurrentIdx((p) => p + 1);
-    setIsPlating(false);
-    setIsSelecting(false);
   };
 
   const handleFinish = () => {
     const cs = slices.filter((s) => s.ingredientId === currentCfg.id);
-    const finalPlates =
-      cs.length > 0 ? flushCurrentSlicesToPlate(cs, completedPlates) : completedPlates;
     if (cs.length > 0) {
-      setCompletedPlates(finalPlates);
-      setSlices((prev) => prev.filter((s) => s.ingredientId !== currentCfg.id));
-      playSound('plate');
+      autoPlate(cs);
+      setPendingAdvance('finish');
+    } else {
+      playSound('complete');
+      setTimeout(() => onComplete(completedPlates), 400);
     }
-    playSound('complete');
-    setTimeout(() => onComplete(finalPlates), 500);
   };
 
   if (!currentCfg) return null;
