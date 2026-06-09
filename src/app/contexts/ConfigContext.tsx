@@ -54,7 +54,8 @@ const ConfigContext = createContext<ConfigContextValue | null>(null);
 /* Defaults helper                                                      */
 /* ------------------------------------------------------------------ */
 
-const STORAGE_KEY = 'game-config-overrides:v1';
+// v2: 切到 Cookbook Flat 调色板,旧 v1 overrides 自动失效
+const STORAGE_KEY = 'game-config-overrides:v2';
 
 function getDefaults(): ConfigState {
   return {

@@ -301,7 +301,7 @@ export function ConveyorMode({
               fontSize: '3.5rem',
               fontWeight: 800,
               color: j.color,
-              textShadow: '0 4px 12px rgba(0,0,0,0.4)',
+              textShadow: 'none',
             }}
             initial={{ scale: 0, opacity: 0, y: 0 }}
             animate={{ scale: 1.2, opacity: 1, y: -60 }}
@@ -365,7 +365,7 @@ export function ConveyorMode({
                         width: '120px',
                         height: '120px',
                         objectFit: 'contain',
-                        filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.3))',
+                        filter: 'none',
                       }}
                     />
                   ) : (
@@ -374,7 +374,7 @@ export function ConveyorMode({
                       aria-label={cfg.name[language]}
                       style={{
                         fontSize: '5rem',
-                        filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.3))',
+                        filter: 'none',
                       }}
                     >
                       {cfg.emoji}

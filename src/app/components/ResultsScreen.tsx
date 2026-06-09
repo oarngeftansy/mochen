@@ -43,7 +43,7 @@ export function ResultsScreen({
           fontSize: 'clamp(2.5rem, 6vw, 4rem)',
           fontWeight: 800,
           color: PALETTE.primary,
-          textShadow: '0 4px 12px rgba(0,0,0,0.3)',
+          textShadow: 'none',
           textAlign: 'center',
           marginBottom: '3rem',
         }}

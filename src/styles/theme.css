@@ -9,35 +9,37 @@
 :root {
   --font-size: 16px;
 
-  /* === 游戏调色板 (与 src/config/assets.ts PALETTE 对应) — Cookbook Cozy === */
-  --game-primary: #E07856;
-  --game-primary-dark: #C56546;
-  --game-primary-shadow: #A04E36;
-  --game-secondary: #A88663;
-  --game-bg-light: #FBF4E5;
-  --game-bg-dark: #F2E6CC;
-  --game-text-dark: #5D4037;
-  --game-text-muted: #9C7A4D;
-  --game-surface: #FFFBF2;
-  --game-tap: #8FB8DE;
-  --game-hold: #F4B5B0;
-  --game-hold-2: #B5D6A7;
-  --game-perfect: #6BA67A;
-  --game-good: #E6B450;
-  --game-miss: #D75E5E;
-  --game-combo: #E89BB5;
-  --game-success: #7CB082;
-  --game-warning: #E69D40;
+  /* === 游戏调色板 — Sketchbook Sim (sage + cream + dark-ink outline) === */
+  --game-primary: #D67152;
+  --game-primary-dark: #B85E3F;
+  --game-primary-shadow: #6B4A2E;
+  --game-secondary: #5C3E2A;
+  --game-bg-light: #B5C9A5;
+  --game-bg-dark: #9DB58E;
+  --game-text-dark: #4A3422;
+  --game-text-muted: #8B7355;
+  --game-surface: #FAEFD5;
+  --game-tap: #A8C7E3;
+  --game-hold: #E8B5A8;
+  --game-hold-2: #B8D4A8;
+  --game-perfect: #7CA56C;
+  --game-good: #D9A852;
+  --game-miss: #C56A5A;
+  --game-combo: #D89BA0;
+  --game-success: #88B07C;
+  --game-warning: #D49850;
 
-  --game-bg-gradient: linear-gradient(135deg, var(--game-bg-light) 0%, var(--game-bg-dark) 100%);
-  --game-primary-gradient: linear-gradient(135deg, var(--game-primary) 0%, var(--game-primary-dark) 100%);
+  --game-bg-gradient: linear-gradient(180deg, var(--game-bg-light) 0%, var(--game-bg-dark) 100%);
+  /* 平面化 — sketchbook 风格按钮用纯色填充,不再做渐变 */
+  --game-primary-gradient: var(--game-primary);
 
-  /* === 统一阴影 token (cozy cookbook 风,柔和漫射 + 极小偏移) === */
-  --shadow-cta: 0 4px 0 var(--game-primary-shadow), 0 8px 18px rgba(160, 78, 54, 0.18);
-  --shadow-card: 0 2px 0 rgba(168, 134, 99, 0.2), 0 4px 14px rgba(107, 68, 35, 0.08);
-  --shadow-pill: 0 1px 0 rgba(168, 134, 99, 0.18), 0 2px 8px rgba(107, 68, 35, 0.06);
-  --shadow-modal: 0 8px 24px rgba(107, 68, 35, 0.15), 0 2px 0 rgba(168, 134, 99, 0.2);
-  --text-shadow-title: 0 2px 4px rgba(160, 78, 54, 0.18);
+  /* === 阴影 token — flat sketchbook,无阴影。
+        保留 token 名以兼容现有引用,值全部置 none。 === */
+  --shadow-cta: none;
+  --shadow-card: none;
+  --shadow-pill: none;
+  --shadow-modal: none;
+  --text-shadow-title: none;
 
   /* === 字体 (与 PALETTE FONTS 对应) === */
   --font-display: 'Baloo 2', 'Noto Sans SC', cursive;

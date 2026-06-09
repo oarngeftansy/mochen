@@ -48,7 +48,7 @@ export function StartScreen({ onStart }: { onStart: () => void }) {
             left: x,
             top: y,
             fontSize: `${size}px`,
-            filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.15))',
+            filter: 'none',
           }}
           initial={{ opacity: 0, scale: 0, rotate: -180 }}
           animate={{

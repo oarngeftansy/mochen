@@ -88,31 +88,33 @@ export type { SfxKey, BgmKey } from './audio';
 /* ------------------------------------------------------------------ */
 
 /**
- * 游戏调色板。改这里 → theme.css 自动通过 CSS 变量同步到所有组件。
- *
- * 当前: Cookbook Cozy(食谱本温馨)主题 — 偏暖低饱和、纸张纹理、柔和阴影。
+ * 游戏调色板 — Sketchbook Sim 风(类 Hay Day / Cooking Mama):
+ * - sage 绿背景(像桌布 / 草坪)
+ * - 奶油色卡片
+ * - 深棕墨水描边
+ * - 完全无阴影,靠描边和颜色对比建立层次
  */
 export const PALETTE = {
-  primary: '#E07856',        // 烤番茄陶土色(降饱和,比鲜红耐看)
-  primaryDark: '#C56546',
-  primaryShadow: '#A04E36',
-  secondary: '#A88663',      // 浅烤面包棕(细描边用)
-  bgLight: '#FBF4E5',        // 奶油纸
-  bgDark: '#F2E6CC',         // 烤纸
-  textDark: '#5D4037',
-  textMuted: '#9C7A4D',
-  surface: '#FFFBF2',        // 米白纸面
-  /** 玩法状态色 */
-  tap: '#8FB8DE',            // 矢车菊蓝(柔)
-  hold: '#F4B5B0',           // 桃粉
-  hold2: '#B5D6A7',          // 鼠尾草绿
-  /** 判定色 */
-  perfect: '#6BA67A',        // 鼠尾草绿
-  good: '#E6B450',           // 暖芥黄
-  miss: '#D75E5E',
-  combo: '#E89BB5',          // 玫瑰粉
-  success: '#7CB082',
-  warning: '#E69D40',        // 焦糖
+  primary: '#D67152',        // 哑光陶土(主 CTA)
+  primaryDark: '#B85E3F',
+  primaryShadow: '#6B4A2E',  // 现在做内描边用,不做投影
+  secondary: '#5C3E2A',      // 深墨水棕(细勾边)
+  bgLight: '#B5C9A5',        // sage 绿背景
+  bgDark: '#9DB58E',         // sage 深一点
+  textDark: '#4A3422',
+  textMuted: '#8B7355',
+  surface: '#FAEFD5',        // 奶油纸卡片
+  /** 玩法状态色 — 平面 pastel */
+  tap: '#A8C7E3',
+  hold: '#E8B5A8',
+  hold2: '#B8D4A8',
+  /** 判定色 — 都用低饱和 */
+  perfect: '#7CA56C',
+  good: '#D9A852',
+  miss: '#C56A5A',
+  combo: '#D89BA0',
+  success: '#88B07C',
+  warning: '#D49850',
 } as const;
 
 /* ------------------------------------------------------------------ */

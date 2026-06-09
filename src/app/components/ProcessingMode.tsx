@@ -250,7 +250,7 @@ export function ProcessingMode({
             fontSize: '2rem',
             fontWeight: 800,
             color: PALETTE.textDark,
-            textShadow: '0 2px 8px rgba(0,0,0,0.2)',
+            textShadow: 'none',
           }}
         >
           {t('processingMode')}
@@ -467,7 +467,7 @@ export function ProcessingMode({
                 fontSize: '3.5rem',
                 fontWeight: 800,
                 color: PALETTE.primary,
-                textShadow: '0 0 30px rgba(255,230,109,0.8), 0 4px 12px rgba(0,0,0,0.3)',
+                textShadow: 'none',
               }}
               initial={{ scale: 0, rotate: -10 }}
               animate={{ scale: 1, rotate: 0 }}
@@ -818,7 +818,7 @@ function PlatingAnimation({
                 src={cfg.imageSliced}
                 alt={cfg.name[language]}
                 className="w-40 h-40 object-contain"
-                style={{ filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.15))' }}
+                style={{ filter: 'none' }}
               />
             ) : (
               <div
@@ -827,7 +827,7 @@ function PlatingAnimation({
                 style={{
                   fontSize: '120px',
                   lineHeight: 1,
-                  filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.15))',
+                  filter: 'none',
                 }}
               >
                 {cfg.emoji}
